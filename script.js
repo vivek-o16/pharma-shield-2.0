@@ -1933,3 +1933,49 @@
   });
 })();
 
+
+
+/* ===== Pharma Shield 2.0 — Predefined Help Assistant ===== */
+(function(){
+  const answers = {
+    search: ["How do I search a medicine?", "Enter a medicine name or batch number in the main search area and select the matching result. Pharma Shield checks the available CDSCO alert records."],
+    nsq: ["What is an NSQ drug alert?", "NSQ means Not of Standard Quality. An NSQ alert indicates that a drug sample was reported by the regulatory source as failing a specified quality standard or test."],
+    batch: ["What is a batch number?", "A batch number is the identifier used to trace a particular manufactured lot of a medicine. Use it together with the medicine name when you have it."],
+    alerted: ["What does an Alerted result mean?", "It means a matching record was found in the Pharma Shield drug-alert dataset. Open the result to review the available regulatory details and source information."],
+    noalert: ["What does No Alert Found mean?", "It means no matching record was found in the available Pharma Shield dataset for the information searched. It is not a guarantee that a medicine is universally safe or free from all regulatory issues."],
+    prohibited: ["What are Prohibited Drugs?", "The Prohibited Drugs section provides the entries included in the supplied prohibited-drugs reference dataset. Open the section to search and review the listed entries and notification details."],
+    analytics: ["How does Analytics work?", "Analytics summarizes the drug-alert dataset available in Pharma Shield, such as records by year and other dataset-level patterns supported by the stored data."],
+    data: ["Where does the data come from?", "Pharma Shield uses its included CDSCO drug-alert dataset and the supplied prohibited-drugs reference dataset. Source and coverage information is shown within the product where available."],
+    about: ["About Pharma Shield", "Pharma Shield is a student-developed pharmaceutical information platform focused on CDSCO drug quality alerts and regulatory information. The project team is Vivek Ramteke and Nikhil Mohare, 3rd Year B.Pharm, School of Pharmaceutical Science & Research, Sardar Patel University, Balaghat."]
+  };
+
+  function initHelp(){
+    const toggle=document.getElementById("ps-help-toggle");
+    const panel=document.getElementById("ps-help-panel");
+    const close=document.getElementById("ps-help-close");
+    const answer=document.getElementById("ps-help-answer");
+    if(!toggle||!panel) return;
+
+    function openPanel(){
+      panel.hidden=false; toggle.setAttribute("aria-expanded","true");
+    }
+    function closePanel(){
+      panel.hidden=true; toggle.setAttribute("aria-expanded","false");
+    }
+
+    toggle.addEventListener("click",()=>panel.hidden?openPanel():closePanel());
+    if(close) close.addEventListener("click",closePanel);
+
+    document.querySelectorAll("[data-help-q]").forEach(btn=>{
+      btn.addEventListener("click",()=>{
+        const item=answers[btn.dataset.helpQ];
+        if(!item||!answer) return;
+        answer.innerHTML="<strong>"+item[0]+"</strong><span>"+item[1]+"</span>";
+        answer.hidden=false;
+      });
+    });
+  }
+
+  if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",initHelp);
+  else initHelp();
+})();

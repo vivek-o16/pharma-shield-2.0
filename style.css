@@ -29,3 +29,36 @@ footer{background:#091b1c;color:#a1b5b1;padding:40px 0}.footer-shell{display:fle
 @media(max-width:620px){.shell{width:min(calc(100% - 26px),var(--shell))}.header-shell{height:68px}.brand small{display:none}.hero{min-height:auto}.hero-shell{padding:70px 0}.hero h1{font-size:44px}.hero-lead{font-size:15px}.hero-actions .btn{width:100%}.section-pad{padding:72px 0}.section-head.split{display:block}.head-note{display:inline-flex;margin-top:10px}.search-panel,.method-panel,.scan-panel,.filter-card{padding:20px}.result-grid{grid-template-columns:1fr}.stats-grid{grid-template-columns:1fr 1fr}.stat-item{padding:24px 13px}.stat-item:first-child{padding-left:13px}.stat-item strong{font-size:26px}.recent-grid,.process-grid{grid-template-columns:1fr}.process-grid article{border-right:0!important;border-top:1px solid var(--line)}.process-grid article:first-child{border-top:0}.scan-workbench,.scan-review{grid-template-columns:1fr}.scan-readout{grid-column:auto}.historical-card{display:block}.archive-metrics{margin-top:20px}.narrative-copy>p{font-size:17px}.narrative-lines div{grid-template-columns:100px 1fr}.about-card,.feedback-card{padding:25px;gap:25px}.footer-shell{display:block}.footer-links{margin:25px 0;flex-wrap:wrap}.disclaimer .shell{display:block}.disclaimer p{margin-top:8px}.prohibited-hero{padding:75px 0 50px}.prohibited-search{display:block}.prohibited-search .btn{width:100%;margin-top:8px}.prohibited-search-panel{margin-top:-45px}}
 
 .result-topline{display:flex;align-items:center;justify-content:space-between;gap:10px}.result-source-chip,.intelligence-tag{font-size:9px;letter-spacing:.1em;font-weight:800;color:#71817e;border:1px solid var(--line);padding:6px 8px;border-radius:99px}.result-title{font-size:26px;letter-spacing:-.03em;margin:18px 0 5px}.shield-intelligence{margin:25px 0;border-radius:18px;background:#0f292a;color:#fff;padding:22px;border:1px solid rgba(255,255,255,.08)}.intelligence-head{display:flex;justify-content:space-between;gap:15px;align-items:start}.shield-intelligence .eyebrow{color:#80d5ca}.shield-intelligence h3{font-size:20px;margin:5px 0}.shield-intelligence p{color:#b8ccc8;font-size:12px;max-width:820px}.shield-intelligence p strong{color:#fff}.intelligence-tag{color:#80d5ca;border-color:rgba(128,213,202,.2)}.intelligence-points{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:18px}.intelligence-points div{padding:14px;border:1px solid rgba(255,255,255,.09);border-radius:12px;background:rgba(255,255,255,.035)}.intelligence-points b,.intelligence-points span{display:block}.intelligence-points b{font-size:9px;letter-spacing:.1em;color:#7dd3c8}.intelligence-points span{font-size:11px;color:#9db1ad;margin-top:6px}@media(max-width:620px){.result-topline,.intelligence-head{display:block}.result-source-chip,.intelligence-tag{display:inline-block;margin-top:10px}.intelligence-points{grid-template-columns:1fr}}
+
+
+/* ===== Pharma Shield 2.0 — Team & Help Assistant ===== */
+.ps-about-team-section{padding:72px 20px;position:relative}
+.ps-about-team-inner{max-width:1120px;margin:0 auto}
+.ps-about-heading{text-align:center;max-width:760px;margin:0 auto 34px}
+.ps-about-kicker,.ps-help-kicker{font-size:.72rem;font-weight:800;letter-spacing:.14em;opacity:.72}
+.ps-about-heading h2{margin:.45rem 0 .7rem;font-size:clamp(1.8rem,4vw,2.8rem)}
+.ps-about-heading p{margin:0;line-height:1.7;opacity:.78}
+.ps-team-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px}
+.ps-team-card{display:flex;align-items:center;gap:22px;padding:26px;border:1px solid rgba(100,120,150,.2);border-radius:22px;background:rgba(255,255,255,.04);box-shadow:0 12px 35px rgba(0,0,0,.06)}
+.ps-team-photo-placeholder{width:128px;height:128px;min-width:128px;border-radius:50%;display:flex;align-items:center;justify-content:center;border:2px dashed currentColor;opacity:.55;font-size:.72rem;font-weight:800;letter-spacing:.1em}
+.ps-team-info h3{margin:0 0 8px;font-size:1.3rem}
+.ps-team-role{margin:0 0 12px;font-weight:700;line-height:1.4}
+.ps-team-academic,.ps-team-institution{margin:4px 0;line-height:1.45;opacity:.76;font-size:.92rem}
+.ps-help-assistant{position:fixed;right:22px;bottom:22px;z-index:9999;font-family:inherit}
+.ps-help-toggle{border:0;border-radius:999px;padding:12px 17px;display:flex;align-items:center;gap:9px;cursor:pointer;font:inherit;font-weight:800;box-shadow:0 10px 30px rgba(0,0,0,.2)}
+.ps-help-toggle-icon{width:24px;height:24px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;border:1px solid currentColor;font-weight:900}
+.ps-help-panel{position:absolute;right:0;bottom:58px;width:min(370px,calc(100vw - 32px));max-height:min(680px,calc(100vh - 110px));overflow:auto;border:1px solid rgba(100,120,150,.24);border-radius:20px;padding:18px;background:var(--background, #fff);box-shadow:0 18px 55px rgba(0,0,0,.22)}
+.ps-help-panel-head{display:flex;justify-content:space-between;gap:16px;align-items:flex-start}
+.ps-help-panel-head h3{margin:4px 0 0;font-size:1.25rem}
+.ps-help-close{border:0;background:transparent;font-size:1.7rem;line-height:1;cursor:pointer;opacity:.7}
+.ps-help-subtitle{margin:8px 0 14px;opacity:.7;font-size:.9rem}
+.ps-help-questions{display:grid;gap:8px}
+.ps-help-questions button{width:100%;text-align:left;border:1px solid rgba(100,120,150,.2);border-radius:12px;background:transparent;padding:11px 12px;cursor:pointer;font:inherit;font-size:.88rem;transition:transform .15s ease,background .15s ease}
+.ps-help-questions button:hover{transform:translateY(-1px)}
+.ps-help-answer{margin-top:14px;padding:13px;border-radius:12px;background:rgba(100,120,150,.08);line-height:1.55;font-size:.9rem}
+.ps-help-answer strong{display:block;margin-bottom:5px}
+@media (max-width:760px){
+  .ps-team-grid{grid-template-columns:1fr}
+  .ps-team-card{align-items:flex-start}
+  .ps-help-assistant{right:14px;bottom:14px}
+}

@@ -185,5 +185,73 @@
 <footer><div class="shell footer-shell"><div><a class="brand" href="#home"><span class="brand-mark"><svg viewBox="0 0 48 48"><path d="M24 4 41 10v12c0 10.8-6.8 18.8-17 22C13.8 40.8 7 32.8 7 22V10z"/><path d="M24 14v20M14 24h20"/></svg></span><span><strong>PHARMA<span>SHIELD</span></strong><small>Drug Safety Intelligence</small></span></a></div><div class="footer-links"><a href="#check">Check Drug</a><a href="#analytics">Intelligence</a><a href="prohibited.html">Prohibited Drugs</a><a href="#about">About</a></div><small>Built for pharmaceutical education &amp; innovation.</small></div></footer>
 
 <script src="script.js"></script>
+
+<section id="about-pharma-shield" class="ps-about-team-section" aria-labelledby="ps-about-title">
+  <div class="ps-about-team-inner">
+    <div class="ps-about-heading">
+      <span class="ps-about-kicker">ABOUT PHARMA SHIELD</span>
+      <h2 id="ps-about-title">Built by Pharmacy Students</h2>
+      <p>Pharma Shield is a student-developed pharmaceutical information platform focused on CDSCO drug quality alerts and regulatory information.</p>
+    </div>
+
+    <div class="ps-team-grid">
+      <article class="ps-team-card">
+        <div class="ps-team-photo-placeholder" aria-label="Vivek Ramteke photo placeholder">
+          <span>PHOTO</span>
+        </div>
+        <div class="ps-team-info">
+          <h3>Vivek Ramteke</h3>
+          <p class="ps-team-role">Web Development &amp; Regulatory Intelligence and Research</p>
+          <p class="ps-team-academic">3rd Year, B.Pharm</p>
+          <p class="ps-team-institution">School of Pharmaceutical Science &amp; Research<br>Sardar Patel University, Balaghat</p>
+        </div>
+      </article>
+
+      <article class="ps-team-card">
+        <div class="ps-team-photo-placeholder" aria-label="Nikhil Mohare photo placeholder">
+          <span>PHOTO</span>
+        </div>
+        <div class="ps-team-info">
+          <h3>Nikhil Mohare</h3>
+          <p class="ps-team-role">Pharmaceutical Research &amp; Data Development</p>
+          <p class="ps-team-academic">3rd Year, B.Pharm</p>
+          <p class="ps-team-institution">School of Pharmaceutical Science &amp; Research<br>Sardar Patel University, Balaghat</p>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+
+<!-- Pharma Shield Help Assistant: predefined FAQ buttons only; no manual chat input -->
+<div id="ps-help-assistant" class="ps-help-assistant" aria-label="Pharma Shield Help Assistant">
+  <button id="ps-help-toggle" class="ps-help-toggle" type="button" aria-expanded="false" aria-controls="ps-help-panel">
+    <span class="ps-help-toggle-icon">?</span>
+    <span>Need Help?</span>
+  </button>
+  <div id="ps-help-panel" class="ps-help-panel" hidden>
+    <div class="ps-help-panel-head">
+      <div>
+        <span class="ps-help-kicker">PHARMA SHIELD</span>
+        <h3>How can we help?</h3>
+      </div>
+      <button id="ps-help-close" class="ps-help-close" type="button" aria-label="Close help">×</button>
+    </div>
+    <p class="ps-help-subtitle">Select a question to see the answer.</p>
+    <div id="ps-help-questions" class="ps-help-questions">
+      <button type="button" data-help-q="search">How do I search a medicine?</button>
+      <button type="button" data-help-q="nsq">What is an NSQ drug alert?</button>
+      <button type="button" data-help-q="batch">What is a batch number?</button>
+      <button type="button" data-help-q="alerted">What does an Alerted result mean?</button>
+      <button type="button" data-help-q="noalert">What does No Alert Found mean?</button>
+      <button type="button" data-help-q="prohibited">What are Prohibited Drugs?</button>
+      <button type="button" data-help-q="analytics">How does Analytics work?</button>
+      <button type="button" data-help-q="data">Where does the data come from?</button>
+      <button type="button" data-help-q="about">About Pharma Shield</button>
+    </div>
+    <div id="ps-help-answer" class="ps-help-answer" hidden></div>
+  </div>
+</div>
+
 </body>
 </html>
