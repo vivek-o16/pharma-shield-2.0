@@ -221,6 +221,27 @@ h1{font-size:clamp(3rem,5.5vw,5.3rem);line-height:.98;letter-spacing:-.065em;mar
   .page-numbers{justify-content:center}
 }
 
+/* Prohibited Drugs table -> stacked cards below 640px.
+   Pure CSS: labels come from ::before content on the existing
+   .col-* classes, so prohibited.js needs no changes. */
+@media(max-width:640px){
+  .prohibited-table-wrap{overflow-x:visible;background:none;border:0;box-shadow:none}
+  .prohibited-table{min-width:0;border-collapse:separate;border-spacing:0 12px}
+  .prohibited-table thead{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+  .prohibited-table tbody tr{display:block;background:#fff;border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);padding:4px 0}
+  .prohibited-table tbody tr:hover{background:#fff}
+  .prohibited-table tbody td{display:flex;gap:12px;align-items:baseline;width:auto;min-width:0;padding:9px 14px;border-bottom:1px dashed var(--line)}
+  .prohibited-table tbody tr td:last-child{border-bottom:0}
+  .prohibited-table tbody td::before{flex:0 0 108px;font:700 .64rem var(--display,inherit);text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
+  .prohibited-table .col-sr::before{content:"Sr. No."}
+  .prohibited-table .col-drug::before{content:"Drug"}
+  .prohibited-table .col-notif::before{content:"Notification"}
+  .prohibited-table .col-date::before{content:"Date"}
+  .prohibited-table .col-details::before{content:"Details"}
+  .prohibited-table .col-sr{font-weight:800;color:var(--teal2)}
+  .prohibited-table .col-drug{font-weight:700}
+}
+
 
 /* Month / year report filter — additive only */
 .alert-filter-card{margin-top:22px;padding:18px 20px;background:rgba(255,255,255,.94);border:1px solid var(--line);border-radius:18px;box-shadow:0 12px 30px rgba(18,40,62,.06)}
