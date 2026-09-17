@@ -129,10 +129,10 @@
   <div class="shell">
     <div class="section-head"><span class="eyebrow">02 · INTELLIGENCE</span><h2>See the signal behind the records.</h2><p>Turn the alert archive into patterns you can explore—not just numbers on a page.</p></div>
     <div class="insight-grid">
-      <article class="chart-panel chart-wide"><div class="panel-top"><div><span>ALERT ACTIVITY</span><h3>Yearly distribution</h3></div><span class="panel-tag">REAL DATA</span></div><div class="chart-wrap"><canvas id="chart-years"></canvas></div></article>
-      <article class="chart-panel"><div class="panel-top"><div><span>CLASSIFICATION</span><h3>Alert mix</h3></div></div><div class="chart-wrap"><canvas id="chart-category-split"></canvas></div></article>
-      <article class="chart-panel"><div class="panel-top"><div><span>MANUFACTURER LANDSCAPE</span><h3>Most represented</h3></div></div><div class="chart-wrap"><canvas id="chart-manufacturers"></canvas></div></article>
-      <article class="chart-panel chart-wide"><div class="panel-top"><div><span>QUALITY SIGNAL</span><h3>Common failure reasons</h3></div></div><div class="chart-wrap tall"><canvas id="chart-reasons"></canvas></div></article>
+      <article class="chart-panel chart-wide"><div class="panel-top"><div><span>ALERT ACTIVITY</span><h3>Yearly distribution</h3></div><span class="panel-tag">REAL DATA</span></div><div class="chart-wrap" id="chart-years" aria-label="Yearly alert distribution"></div></article>
+      <article class="chart-panel"><div class="panel-top"><div><span>CLASSIFICATION</span><h3>Alert mix</h3></div></div><div class="chart-wrap" id="chart-category-split" aria-label="Alert classification split"></div></article>
+      <article class="chart-panel"><div class="panel-top"><div><span>MANUFACTURER LANDSCAPE</span><h3>Most represented</h3></div></div><div class="chart-wrap" id="chart-manufacturers" aria-label="Most represented manufacturers"></div></article>
+      <article class="chart-panel chart-wide"><div class="panel-top"><div><span>QUALITY SIGNAL</span><h3>Common failure reasons</h3></div></div><div class="chart-wrap tall" id="chart-reasons" aria-label="Common failure reasons"></div></article>
     </div>
     <div class="historical-card" id="historical-database"><div><span class="eyebrow">ARCHIVE</span><h3>Historical database</h3><p>Coverage and alert counts calculated from the loaded dataset.</p></div><div class="archive-metrics"><span><b id="hist-years">—</b> years</span><span><b id="hist-total">—</b> total</span><span><b id="hist-nsq">—</b> NSQ</span><span><b id="hist-alerted">—</b> alerted</span></div><small id="hist-coverage-note"></small></div>
   </div>
