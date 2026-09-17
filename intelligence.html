@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width,initial-scale=1" name="viewport"/><title>Pharma Shield — Intelligence</title><meta content="Explore patterns across the loaded regulatory alert archive." name="description"/><link href="style.css" rel="stylesheet"/></head><body>
+<header class="site-header" id="site-header">
+<div class="shell header-shell">
+<a aria-label="Pharma Shield home" class="brand" href="index.html#home">
+<span aria-hidden="true" class="brand-mark"><svg viewbox="0 0 48 48"><path d="M24 4 41 10v12c0 10.8-6.8 18.8-17 22C13.8 40.8 7 32.8 7 22V10z"></path><path d="M24 14v20M14 24h20"></path></svg></span>
+<span><strong>PHARMA<span>SHIELD</span></strong><small>Drug Safety Intelligence</small></span>
+</a>
+<nav aria-label="Primary navigation" class="main-nav" id="main-nav">
+<a data-nav="" href="index.html#home">Overview</a>
+<a data-nav="" href="index.html#check">Check Drug</a>
+<a data-nav="" href="intelligence.html">Intelligence</a>
+<a data-nav="" href="alert-explorer.html">Alert Explorer</a>
+<a data-nav="" href="method.html">The Method</a>
+<a data-nav="" href="sources.html">Sources</a>
+<a data-nav="" href="prohibited.html">Prohibited Drugs</a>
+<a data-nav="" href="about.html">About</a>
+<a data-nav="" href="feedback.html">Feedback</a>
+</nav>
+<a class="header-cta" href="index.html#check">Open Drug Check <span>↗</span></a>
+<button aria-expanded="false" aria-label="Toggle navigation" class="nav-toggle" id="nav-toggle"><span></span><span></span><span></span></button>
+</div>
+</header>
+<main><section class="ps-page-hero ps-page-hero--dark"><div class="shell"><span class="eyebrow">02 · INTELLIGENCE</span><h1>Drug Safety Intelligence</h1><p>Explore patterns across the loaded regulatory alert archive.</p></div></section><section class="section-pad ps-page-content"><div class="shell">
+<div class="ps-page-intro-note"><strong>Live dataset view.</strong> These charts are calculated in the browser from the bundled <code>drugAlerts.json</code> dataset.</div>
+<div class="shell">
+<div class="section-head"><span class="eyebrow">02 · INTELLIGENCE</span><h2>See the signal behind the records.</h2><p>Turn the alert archive into patterns you can explore—not just numbers on a page.</p></div>
+<div class="insight-grid">
+<article class="chart-panel chart-wide"><div class="panel-top"><div><span>ALERT ACTIVITY</span><h3>Yearly distribution</h3></div><span class="panel-tag">REAL DATA</span></div><div aria-label="Yearly alert distribution" class="chart-wrap" id="chart-years"></div></article>
+<article class="chart-panel"><div class="panel-top"><div><span>CLASSIFICATION</span><h3>Alert mix</h3></div></div><div aria-label="Alert classification split" class="chart-wrap" id="chart-category-split"></div></article>
+<article class="chart-panel"><div class="panel-top"><div><span>MANUFACTURER LANDSCAPE</span><h3>Most represented</h3></div></div><div aria-label="Most represented manufacturers" class="chart-wrap" id="chart-manufacturers"></div></article>
+<article class="chart-panel chart-wide"><div class="panel-top"><div><span>QUALITY SIGNAL</span><h3>Common failure reasons</h3></div></div><div aria-label="Common failure reasons" class="chart-wrap tall" id="chart-reasons"></div></article>
+</div>
+<div class="historical-card" id="historical-database"><div><span class="eyebrow">ARCHIVE</span><h3>Historical database</h3><p>Coverage and alert counts calculated from the loaded dataset.</p></div><div class="archive-metrics"><span><b id="hist-years">—</b> years</span><span><b id="hist-total">—</b> total</span><span><b id="hist-nsq">—</b> NSQ</span><span><b id="hist-alerted">—</b> alerted</span></div><small id="hist-coverage-note"></small></div>
+</div>
+</div></section></main>
+<div aria-label="Pharma Shield Help Assistant" class="ps-help-assistant" id="ps-help-assistant">
+<button aria-controls="ps-help-panel" aria-expanded="false" class="ps-help-toggle" id="ps-help-toggle" type="button">
+<span class="ps-help-toggle-icon">?</span><span>Need Help?</span>
+</button>
+<div class="ps-help-panel" hidden="" id="ps-help-panel">
+<div class="ps-help-panel-head">
+<div><span class="ps-help-kicker">PHARMA SHIELD</span><h3>How can we help?</h3></div>
+<button aria-label="Close help" class="ps-help-close" id="ps-help-close" type="button">×</button>
+</div>
+<p class="ps-help-subtitle">Select a question to see the answer.</p>
+<div class="ps-help-questions">
+<button data-help-q="search" type="button">How do I search a medicine?</button>
+<button data-help-q="nsq" type="button">What is an NSQ drug alert?</button>
+<button data-help-q="batch" type="button">What is a batch number?</button>
+<button data-help-q="alerted" type="button">What does an Alerted result mean?</button>
+<button data-help-q="noalert" type="button">What does No Alert Found mean?</button>
+<button data-help-q="prohibited" type="button">What are Prohibited Drugs?</button>
+<button data-help-q="analytics" type="button">How does Analytics work?</button>
+<button data-help-q="data" type="button">Where does the data come from?</button>
+<button data-help-q="about" type="button">About Pharma Shield</button>
+</div>
+<div class="ps-help-answer" hidden="" id="ps-help-answer"></div>
+</div>
+</div>
+
+<footer>
+<div class="shell footer-shell">
+<div>
+<a class="brand" href="index.html#home">
+<span class="brand-mark"><svg viewbox="0 0 48 48"><path d="M24 4 41 10v12c0 10.8-6.8 18.8-17 22C13.8 40.8 7 32.8 7 22V10z"></path><path d="M24 14v20M14 24h20"></path></svg></span>
+<span><strong>PHARMA<span>SHIELD</span></strong><small>Drug Safety Intelligence</small></span>
+</a>
+</div>
+<div class="footer-links">
+<a href="index.html#check">Check Drug</a>
+<a href="intelligence.html">Intelligence</a>
+<a href="alert-explorer.html">Alert Explorer</a>
+<a href="prohibited.html">Prohibited Drugs</a>
+<a href="about.html">About</a>
+<a href="feedback.html">Feedback</a>
+</div>
+<small>Built for pharmaceutical education &amp; innovation.</small>
+</div>
+</footer>
+<script src="site.js"></script><script src="intelligence.js"></script></body></html>
