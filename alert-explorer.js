@@ -1,23 +1,23 @@
-
 (async function(){
-  "use strict";
-  const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-  const period=r=>r.alertMonth&&r.alertYear?`${r.alertMonth} ${r.alertYear}`:(r.alertYear||"");
-  try{
-    const res=await fetch("./drugAlerts.json",{cache:"no-store"}); if(!res.ok) throw new Error(res.status);
-    const db=await res.json(), records=Array.isArray(db.records)?db.records:[];
-    const sorted=[...records].sort((a,b)=>String(period(b)).localeCompare(String(period(a)))).slice(0,12);
-    const grid=document.getElementById("recent-grid");
-    if(!grid)return;
-    grid.innerHTML=sorted.map((r,i)=>{
-      const nsq=(r.category||"").toUpperCase()==="NSQ";
-      return `<article class="recent-card recent-card--${nsq?"nsq":"alerted"}"><span class="recent-tag recent-tag--${nsq?"nsq":"alerted"}">${nsq?"🔴 NSQ":"🟠 ALERT"}</span><h4>${esc(r.medicineName||"Medicine not specified")}</h4><p class="recent-meta">Batch <span class="batch">${esc(r.batchNumber||"Not specified")}</span></p><p class="recent-meta">${esc(r.manufacturer||"Manufacturer not listed")}</p><p class="recent-meta">Alerted ${esc(period(r)||"Period not listed")}</p><button class="recent-view" type="button" data-open="${i}" aria-expanded="false"><span>View details</span></button><div class="details-body" id="alert-detail-${i}"><dl class="result-grid" style="margin-top:14px;padding-top:14px"><div><dt>Reason for alert</dt><dd>${esc(r.reason||"Not specified")}</dd></div><div><dt>Manufacturing date</dt><dd>${esc(r.manufacturingDate||"Not specified")}</dd></div><div><dt>Expiry date</dt><dd>${esc(r.expiryDate||"Not specified")}</dd></div><div><dt>Drawn by</dt><dd>${esc(r.drawnBy||"Not specified")}</dd></div></dl></div></article>`;
-    }).join("");
-    grid.querySelectorAll("[data-open]").forEach(btn=>btn.addEventListener("click",()=>{
-      const body=document.getElementById("alert-detail-"+btn.dataset.open), open=body.classList.toggle("open");
-      btn.setAttribute("aria-expanded",String(open)); btn.querySelector("span").textContent=open?"Hide details":"View details";
-    }));
-  }catch(err){
-    const grid=document.getElementById("recent-grid"); if(grid) grid.innerHTML="<p>Recent alert records could not be loaded. Please refresh.</p>";
-  }
+'use strict';
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const v=(r,ks,f='Not specified')=>{for(const k of ks)if(r[k]!=null&&String(r[k]).trim())return String(r[k]);return f};
+const nsq=r=>{const x=v(r,['category','reportType','type'],'').toUpperCase();return x.includes('NSQ')||x.includes('NOT OF STANDARD QUALITY')};
+const key=r=>{let y=v(r,['alertYear','year'],'0000'),m=v(r,['alertMonth','month'],'');let n=parseInt(String(m).replace(/\D/g,''),10)||0;return `${y}-${String(n).padStart(2,'0')}`};
+const period=r=>{let m=v(r,['alertMonth','month'],'');let y=v(r,['alertYear','year'],'');return [m,y].filter(Boolean).join(' ')||'Period not listed'};
+try{
+ const res=await fetch('./drugAlerts.json?explorer=3',{cache:'no-store'}); if(!res.ok)throw Error(res.status);
+ const db=await res.json(); const rs=Array.isArray(db.records)?db.records:[];
+ const arr=[...rs].sort((a,b)=>key(b).localeCompare(key(a))).slice(0,12);
+ const grid=document.getElementById('recent-grid'); if(!grid)return;
+ const count=document.getElementById('recent-count'); if(count)count.textContent=`${arr.length} recent records`;
+ grid.innerHTML=arr.map((r,i)=>{const red=nsq(r);return `<article class="ps-alert-card ${red?'ps-alert-card--nsq':'ps-alert-card--other'}">
+ <div class="ps-alert-card-top"><span class="ps-alert-badge ${red?'ps-alert-badge--nsq':'ps-alert-badge--other'}">${red?'● NSQ ALERT':'● ALERT'}</span><span class="ps-alert-period">${esc(period(r))}</span></div>
+ <h2>${esc(v(r,['medicineName','drugName','name'],'Medicine not specified'))}</h2>
+ <div class="ps-alert-facts"><div><span>Batch</span><strong>${esc(v(r,['batchNumber','batchNo','batch']))}</strong></div><div><span>Manufacturer</span><strong>${esc(v(r,['manufacturer','manufacturerName']))}</strong></div><div><span>Dosage / Form</span><strong>${esc(v(r,['dosageForm','dosage','form']))}</strong></div></div>
+ <div class="ps-alert-reason"><span>Reason / Test Failure</span><p>${esc(v(r,['reason','reasonTestFailure','testFailure','failureReason']))}</p></div>
+ <button class="ps-alert-details-btn" type="button" data-open="${i}" aria-expanded="false">View regulatory details <span>+</span></button>
+ <div class="ps-alert-details" id="alert-detail-${i}"><dl><div><dt>Report Type</dt><dd>${esc(v(r,['reportType','category','type']))}</dd></div><div><dt>Alert Period</dt><dd>${esc(period(r))}</dd></div><div><dt>Source</dt><dd>${esc(v(r,['sourceFile','source'],'Source not listed'))}</dd></div><div><dt>Drawn By</dt><dd>${esc(v(r,['drawnBy','sampleDrawnBy']))}</dd></div></dl></div></article>`}).join('');
+ grid.querySelectorAll('[data-open]').forEach(b=>b.onclick=()=>{const d=document.getElementById('alert-detail-'+b.dataset.open),o=d.classList.toggle('open');b.setAttribute('aria-expanded',o);b.querySelector('span').textContent=o?'−':'+'});
+}catch(e){console.error(e);const g=document.getElementById('recent-grid');if(g)g.innerHTML='<div class="ps-alert-error">Recent alert records could not be loaded. Please refresh.</div>'}
 })();
