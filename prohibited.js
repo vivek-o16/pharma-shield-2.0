@@ -8,7 +8,7 @@
 (() => {
   "use strict";
 
-  const DATA_URL = "./bannedDrugs.json";
+  const DATA_URL = "./bannedDrugs.json?v=2";
   const PAGE_SIZE = 15;
 
   let ALL_ENTRIES = [];
@@ -33,7 +33,7 @@
     const tbody = el("#prohibited-tbody");
 
     try {
-      const res = await fetch(DATA_URL, { cache: "no-store" });
+      const res = await fetch(DATA_URL, { cache: "no-store", headers: { "Accept": "application/json" } });
       if (!res.ok) throw new Error("Bad response " + res.status);
 
       const json = await res.json();
