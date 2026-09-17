@@ -1,23 +1,16 @@
 (async function(){
-'use strict';
-const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const v=(r,ks,f='Not specified')=>{for(const k of ks)if(r[k]!=null&&String(r[k]).trim())return String(r[k]);return f};
-const nsq=r=>{const x=v(r,['category','reportType','type'],'').toUpperCase();return x.includes('NSQ')||x.includes('NOT OF STANDARD QUALITY')};
-const key=r=>{let y=v(r,['alertYear','year'],'0000'),m=v(r,['alertMonth','month'],'');let n=parseInt(String(m).replace(/\D/g,''),10)||0;return `${y}-${String(n).padStart(2,'0')}`};
-const period=r=>{let m=v(r,['alertMonth','month'],'');let y=v(r,['alertYear','year'],'');return [m,y].filter(Boolean).join(' ')||'Period not listed'};
-try{
- const res=await fetch('./drugAlerts.json?explorer=3',{cache:'no-store'}); if(!res.ok)throw Error(res.status);
- const db=await res.json(); const rs=Array.isArray(db.records)?db.records:[];
- const arr=[...rs].sort((a,b)=>key(b).localeCompare(key(a))).slice(0,12);
- const grid=document.getElementById('recent-grid'); if(!grid)return;
- const count=document.getElementById('recent-count'); if(count)count.textContent=`${arr.length} recent records`;
- grid.innerHTML=arr.map((r,i)=>{const red=nsq(r);return `<article class="ps-alert-card ${red?'ps-alert-card--nsq':'ps-alert-card--other'}">
- <div class="ps-alert-card-top"><span class="ps-alert-badge ${red?'ps-alert-badge--nsq':'ps-alert-badge--other'}">${red?'● NSQ ALERT':'● ALERT'}</span><span class="ps-alert-period">${esc(period(r))}</span></div>
- <h2>${esc(v(r,['medicineName','drugName','name'],'Medicine not specified'))}</h2>
- <div class="ps-alert-facts"><div><span>Batch</span><strong>${esc(v(r,['batchNumber','batchNo','batch']))}</strong></div><div><span>Manufacturer</span><strong>${esc(v(r,['manufacturer','manufacturerName']))}</strong></div><div><span>Dosage / Form</span><strong>${esc(v(r,['dosageForm','dosage','form']))}</strong></div></div>
- <div class="ps-alert-reason"><span>Reason / Test Failure</span><p>${esc(v(r,['reason','reasonTestFailure','testFailure','failureReason']))}</p></div>
- <button class="ps-alert-details-btn" type="button" data-open="${i}" aria-expanded="false">View regulatory details <span>+</span></button>
- <div class="ps-alert-details" id="alert-detail-${i}"><dl><div><dt>Report Type</dt><dd>${esc(v(r,['reportType','category','type']))}</dd></div><div><dt>Alert Period</dt><dd>${esc(period(r))}</dd></div><div><dt>Source</dt><dd>${esc(v(r,['sourceFile','source'],'Source not listed'))}</dd></div><div><dt>Drawn By</dt><dd>${esc(v(r,['drawnBy','sampleDrawnBy']))}</dd></div></dl></div></article>`}).join('');
- grid.querySelectorAll('[data-open]').forEach(b=>b.onclick=()=>{const d=document.getElementById('alert-detail-'+b.dataset.open),o=d.classList.toggle('open');b.setAttribute('aria-expanded',o);b.querySelector('span').textContent=o?'−':'+'});
-}catch(e){console.error(e);const g=document.getElementById('recent-grid');if(g)g.innerHTML='<div class="ps-alert-error">Recent alert records could not be loaded. Please refresh.</div>'}
+"use strict";
+const official="https://www.cdsco.gov.in/opencms/opencms/en/Alerts/";
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const months={january:1,february:2,march:3,april:4,may:5,june:6,july:7,august:8,september:9,october:10,november:11,december:12};
+const states=["Andhra Pradesh","Arunachal Pradesh","Assam","Bihar","Chhattisgarh","Delhi","Goa","Gujarat","Haryana","Himachal Pradesh","Jharkhand","Karnataka","Kerala","Madhya Pradesh","Maharashtra","Manipur","Meghalaya","Mizoram","Nagaland","Odisha","Punjab","Rajasthan","Sikkim","Tamil Nadu","Telangana","Tripura","Uttar Pradesh","Uttarakhand","West Bengal","Jammu and Kashmir"];
+let rows=[], sortKey="date", dir=-1;
+function stateOf(r){const text=String(r.manufacturer||"");return states.find(s=>new RegExp("\\b"+s.replace(/ /g,"\\s+")+"\\b","i").test(text))||"Not listed"}
+function dateVal(r){const y=Number(r.alertYear)||0,m=months[String(r.alertMonth||"").toLowerCase()]||0;return y*100+m}
+function category(r){const c=String(r.category||"").trim();return c||"Alert"}
+function sortRows(){rows.sort((a,b)=>{let av,bv;if(sortKey==="date"){av=dateVal(a);bv=dateVal(b)}else if(sortKey==="manufacturer"){av=String(a.manufacturer||"").toLowerCase();bv=String(b.manufacturer||"").toLowerCase()}else if(sortKey==="state"){av=stateOf(a).toLowerCase();bv=stateOf(b).toLowerCase()}else if(sortKey==="category"){av=category(a).toLowerCase();bv=category(b).toLowerCase()}else{av=String(a.medicineName||"").toLowerCase();bv=String(b.medicineName||"").toLowerCase()}if(av<bv)return -1*dir;if(av>bv)return 1*dir;return 0})}
+function render(){sortRows();const tbody=document.getElementById("explorer-tbody");document.getElementById("explorer-count").textContent=`${rows.length.toLocaleString("en-IN")} records`;tbody.innerHTML=rows.slice(0,100).map((r,i)=>`<tr><td>${esc([r.alertMonth,r.alertYear].filter(Boolean).join(" ")||"—")}</td><td><strong>${esc(r.medicineName||"—")}</strong><small>Batch: ${esc(r.batchNumber||"—")}</small></td><td>${esc(r.manufacturer||"Not listed")}</td><td>${esc(stateOf(r))}</td><td><span class="explorer-badge explorer-badge--${String(r.category||"").toUpperCase()==="NSQ"?"nsq":"other"}">${String(r.category||"Alert").toUpperCase()==="NSQ"?"NSQ — Not of Standard Quality":esc(category(r))}</span></td><td><a class="source-link" href="${official}" target="_blank" rel="noopener noreferrer">View Official CDSCO Source ↗</a></td></tr>`).join("")||"<tr><td colspan='6'>No records available.</td></tr>"}
+function csv(){const h=["Date","Medicine","Batch","Manufacturer","State","Alert Category","Reason","Source File"];const body=rows.map(r=>[ [r.alertMonth,r.alertYear].filter(Boolean).join(" "),r.medicineName,r.batchNumber,r.manufacturer,stateOf(r),category(r),r.reason,r.sourceFile].map(v=>'"'+String(v??"").replace(/"/g,'""')+'"').join(","));const blob=new Blob([[h.join(","),...body].join("\\n")],{type:"text/csv;charset=utf-8"});const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="pharma-shield-alert-explorer.csv";a.click();}
+function pdf(){if(!(window.jspdf&&window.jspdf.jsPDF)){window.print();return}const doc=new window.jspdf.jsPDF({unit:"pt",format:"a4"});doc.setFontSize(15);doc.text("Pharma Shield — Alert Explorer",40,40);doc.setFontSize(8);let y=62;rows.slice(0,120).forEach((r,i)=>{const text=`${i+1}. ${r.alertMonth||""} ${r.alertYear||""} | ${r.medicineName||"—"} | ${r.category||"Alert"} | ${r.manufacturer||"—"}`;const lines=doc.splitTextToSize(text,510);if(y+lines.length*11>800){doc.addPage();y=40}doc.text(lines,40,y);y+=lines.length*11+5});doc.save("pharma-shield-alert-explorer.pdf")}
+document.addEventListener("DOMContentLoaded",async()=>{try{const r=await fetch("./drugAlerts.json?explorer=3",{cache:"no-store"});const d=await r.json();rows=Array.isArray(d.records)?d.records:[];render()}catch(e){document.getElementById("explorer-tbody").innerHTML="<tr><td colspan='6'>Could not load the alert dataset.</td></tr>"}document.querySelectorAll("[data-sort]").forEach(b=>b.addEventListener("click",()=>{const k=b.dataset.sort;if(sortKey===k)dir*=-1;else{sortKey=k;dir=1}render()}));document.getElementById("explorer-csv").addEventListener("click",csv);document.getElementById("explorer-pdf").addEventListener("click",pdf)});
 })();

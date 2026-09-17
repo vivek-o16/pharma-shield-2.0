@@ -14,6 +14,7 @@
   let ALL_ENTRIES = [];
   let FILTERED = [];
   let currentPage = 1;
+  let activeFilter = "all";
 
   const el = (sel, root = document) => root.querySelector(sel);
   const els = (sel, root = document) => Array.from(root.querySelectorAll(sel));
@@ -86,12 +87,19 @@
     return haystacks.some((h) => normalizeSearch(h).includes(query));
   }
 
+  function matchesQuickFilter(entry, filter) {
+    if (filter === "all") return true;
+    const text = [entry.drugName, entry.notification, entry.details, ...(entry.notificationDates || [])].join(" ").toLowerCase();
+    if (filter === "fdc") return /fixed\s+dose|\bfdc\b|combination/.test(text);
+    if (filter === "withdrawn") return /withdrawn|withdrawal|withdra(w|u)n/.test(text);
+    if (filter === "narcotic") return /narcotic|psychotropic|morphine|opium|codeine|barbiturate|amphetamine/.test(text);
+    return true;
+  }
+
   function runSearch(rawQuery) {
     const query = normalizeSearch(rawQuery);
 
-    FILTERED = query
-      ? ALL_ENTRIES.filter((e) => matchesQuery(e, query))
-      : ALL_ENTRIES;
+    FILTERED = ALL_ENTRIES.filter((e) => matchesQuickFilter(e, activeFilter) && (!query || matchesQuery(e, query)));
 
     currentPage = 1;
     renderTable();
@@ -234,6 +242,14 @@
 
   /* ---------------- Search input ---------------- */
 
+  function initQuickFilters() {
+    els("[data-prohibited-filter]").forEach(btn => btn.addEventListener("click", () => {
+      activeFilter = btn.dataset.prohibitedFilter || "all";
+      els("[data-prohibited-filter]").forEach(b => b.classList.toggle("is-active", b === btn));
+      runSearch(el("#prohibited-search").value);
+    }));
+  }
+
   function initSearch() {
     const input = el("#prohibited-search");
     input.addEventListener("input", (e) => runSearch(e.target.value));
@@ -263,6 +279,7 @@
   document.addEventListener("DOMContentLoaded", async () => {
     initNav();
     initSearch();
+    initQuickFilters();
     await loadBannedDrugs();
   });
 })();

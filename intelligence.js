@@ -1,39 +1,29 @@
-
 (async function(){
-  "use strict";
-  const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-  try{
-    const res=await fetch("./drugAlerts.json",{cache:"no-store"});
-    if(!res.ok) throw new Error("HTTP "+res.status);
-    const db=await res.json();
-    const records=Array.isArray(db.records)?db.records:[];
-    const years=new Map();
-    records.forEach(r=>{if(r.alertYear) years.set(r.alertYear,(years.get(r.alertYear)||0)+1)});
-    const max=Math.max(...years.values(),1);
-    const yearHost=document.getElementById("chart-years");
-    if(yearHost) yearHost.innerHTML=[...years.entries()].sort((a,b)=>a[0]-b[0]).map(([y,c])=>`<div class="bar-col" title="${y}: ${c} records"><div class="bar-track"><div class="bar-fill" style="height:${Math.max(6,Math.round(c/max*100))}%"></div></div><span class="bar-count">${c}</span><span class="bar-label">${y}</span></div>`).join("");
-    const nsq=records.filter(r=>(r.category||"").toUpperCase()==="NSQ").length, other=records.length-nsq, total=records.length||1;
-    const split=document.getElementById("chart-category-split");
-    if(split) split.innerHTML=`<div class="split-bar"><div class="split-seg split-seg--nsq" style="width:${Math.round(nsq/total*100)}%"></div><div class="split-seg split-seg--alerted" style="width:${Math.round(other/total*100)}%"></div></div><div class="split-legend"><span><i class="dot dot--nsq"></i> NSQ — ${nsq.toLocaleString("en-IN")} (${Math.round(nsq/total*100)}%)</span><span><i class="dot dot--alerted"></i> Other alerts — ${other.toLocaleString("en-IN")} (${Math.round(other/total*100)}%)</span></div>`;
-    function ranked(sel,arr){
-      const host=document.getElementById(sel); if(!host)return;
-      const maxc=Math.max(...arr.map(x=>x[1]),1);
-      host.innerHTML=arr.map(([l,c])=>`<div class="rank-row"><span class="rank-label" title="${esc(l)}">${esc(l)}</span><div class="rank-track"><div class="rank-fill" style="width:${Math.max(6,Math.round(c/maxc*100))}%"></div></div><span class="rank-count">${c}</span></div>`).join("")||"<p class='analytics-empty'>Not enough data.</p>";
-    }
-    const mc=new Map(); records.forEach(r=>{const m=(r.manufacturer||"").trim();if(m&&m.toLowerCase()!=="under investigation"){const k=m.length>42?m.slice(0,39)+"…":m;mc.set(k,(mc.get(k)||0)+1)}});
-    ranked("chart-manufacturers",[...mc.entries()].sort((a,b)=>b[1]-a[1]).slice(0,6));
-    const rc=new Map(); records.forEach(r=>{const k=(r.reason||"").trim();if(k)rc.set(k,(rc.get(k)||0)+1)});
-    ranked("chart-reasons",[...rc.entries()].sort((a,b)=>b[1]-a[1]).slice(0,6));
-    const ys=[...new Set(records.map(r=>r.alertYear).filter(Boolean))].sort();
-    const set=(id,v)=>{const e=document.getElementById(id);if(e)e.textContent=v};
-    set("hist-years",ys.length?`${ys[0]}–${ys[ys.length-1]}`:"—");
-    set("hist-total",records.length.toLocaleString("en-IN"));
-    set("hist-nsq",nsq.toLocaleString("en-IN"));
-    set("hist-alerted",other.toLocaleString("en-IN"));
-    set("hist-coverage-note",db.coverage||"");
-  }catch(err){
-    console.error(err);
-    const host=document.getElementById("chart-years");
-    if(host) host.innerHTML="<p class='analytics-empty'>The alert dataset could not be loaded. Please refresh.</p>";
-  }
+"use strict";
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const reasons={
+ "assay": "Assay failure means the measured amount or potency of the active ingredient did not meet the specified standard.",
+ "dissolution": "Dissolution evaluates how a drug substance is released from its dosage form under defined test conditions.",
+ "disintegration": "Disintegration measures how a solid dosage form breaks apart within the specified time.",
+ "sterility": "Sterility testing checks whether specified viable microorganisms are absent from products required to be sterile.",
+ "sub-standard": "Sub-standard indicates that a product does not meet the applicable quality specification; the exact test should be checked in the source record."
+};
+function reasonHelp(label){const l=label.toLowerCase();for(const k of Object.keys(reasons))if(l.includes(k))return reasons[k];return "Review the original source record for the exact test method and acceptance criterion.";}
+try{
+ const res=await fetch("./drugAlerts.json?intelligence=3",{cache:"no-store"}); if(!res.ok)throw new Error(res.status);
+ const db=await res.json(), records=Array.isArray(db.records)?db.records:[];
+ const nsq=records.filter(r=>String(r.category||"").toUpperCase()==="NSQ");
+ const reasonMap=new Map(); nsq.forEach(r=>{const raw=String(r.reason||"Not specified").trim(); const key=raw.length>42?raw.slice(0,39)+"…":raw;reasonMap.set(key,(reasonMap.get(key)||0)+1)});
+ const reasonsTop=[...reasonMap.entries()].sort((a,b)=>b[1]-a[1]).slice(0,8);
+ const months=["January","February","March","April","May","June","July","August","September","October","November","December"];
+ const trend=new Map(); records.forEach(r=>{if(!r.alertYear)return;const mi=months.findIndex(m=>m.toLowerCase()===String(r.alertMonth||"").toLowerCase());const k=`${r.alertYear}-${String(mi<0?0:mi+1).padStart(2,"0")}`;trend.set(k,(trend.get(k)||0)+1)});
+ const labels=[...trend.keys()].sort(), values=labels.map(k=>trend.get(k));
+ const palette=["#d94a5a","#e08a2e","#d3b23f","#4b9bc2","#5d78b7","#6eaa7a","#8a6db7","#4b8f8a"];
+ const common={responsive:true,maintainAspectRatio:false,plugins:{legend:{position:"bottom",labels:{usePointStyle:true,padding:16}},tooltip:{callbacks:{}}}};
+ const c1=document.getElementById("nsq-reasons-chart");
+ if(c1) new Chart(c1,{type:"doughnut",data:{labels:reasonsTop.map(x=>x[0]),datasets:[{data:reasonsTop.map(x=>x[1]),backgroundColor:palette,borderWidth:2,borderColor:"#fff"}]},options:{...common,cutout:"58%",plugins:{...common.plugins,tooltip:{callbacks:{label:ctx=>`${ctx.label}: ${ctx.raw} records`,afterLabel:ctx=>reasonHelp(ctx.label)}}}}});
+ const c2=document.getElementById("monthly-trend-chart");
+ if(c2) new Chart(c2,{type:"line",data:{labels:labels.map(k=>{const [y,m]=k.split("-");return `${months[Number(m)-1]||"Unknown"} ${y}`}),datasets:[{label:"Drug alerts",data:values,borderColor:"#087f73",backgroundColor:"rgba(8,127,115,.12)",fill:true,tension:.28,pointRadius:3,pointHoverRadius:6}]},options:{...common,scales:{x:{ticks:{maxRotation:55,minRotation:30,maxTicksLimit:18}},y:{beginAtZero:true,ticks:{precision:0}}},plugins:{...common.plugins,tooltip:{callbacks:{label:ctx=>`${ctx.raw} alert records`}}}}});
+ const m=document.getElementById("intelligence-metrics"); if(m)m.innerHTML=`<div><b>${records.length.toLocaleString("en-IN")}</b><span>Total alert records</span></div><div><b>${nsq.length.toLocaleString("en-IN")}</b><span>NSQ records</span></div><div><b>${reasonMap.size}</b><span>Distinct reason labels</span></div><div><b>${labels.length}</b><span>Alert months represented</span></div>`;
+}catch(e){console.error(e);document.querySelector(".intelligence-dashboard").insertAdjacentHTML("beforeend","<p class='analytics-empty'>The intelligence dataset could not be loaded. Please refresh.</p>");}
 })();

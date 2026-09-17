@@ -10,7 +10,7 @@
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;family=Manrope:wght@600;700;800&amp;display=swap" rel="stylesheet"/>
 <link href="style.css?v=2" rel="stylesheet"/>
-</head>
+<link href="manifest.json" rel="manifest"/><meta content="#0d3032" name="theme-color"/><script src="https://cdn.jsdelivr.net/npm/fuse.js@7.0.0/dist/fuse.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script></head>
 <body>
 <div aria-live="polite" class="toast-region" id="toast-region"></div>
 <header class="site-header" id="site-header">
@@ -55,13 +55,13 @@
 <div class="panel-label">MEDICINE CHECK</div>
 <form id="search-form" novalidate="">
 <div class="field-block">
-<label for="medicine-name">Medicine / brand name</label>
-<div class="input-wrap"><span class="input-icon">⌕</span><input aria-controls="medicine-suggestions" aria-expanded="false" autocomplete="off" id="medicine-name" name="medicineName" placeholder="e.g. Paracetamol 500 mg" role="combobox" type="text"/><span class="key-hint">↵</span></div>
+<label for="medicine-input">Medicine / brand name</label>
+<div class="input-wrap"><span class="input-icon">⌕</span><input aria-controls="medicine-suggestions" aria-expanded="false" autocomplete="off" id="medicine-input" name="medicineName" placeholder="e.g. Paracetamol 500 mg" role="combobox" type="text"/><span class="key-hint">↵</span></div>
 <ul class="suggestion-list" hidden="" id="medicine-suggestions" role="listbox"></ul>
 </div>
 <div class="field-block">
-<label for="batch-number">Batch number <span>optional</span></label>
-<div class="input-wrap"><span class="input-icon">#</span><input autocomplete="off" id="batch-number" name="batchNumber" placeholder="e.g. ABC123" type="text"/></div>
+<label for="batch-input">Batch number <span>optional</span></label>
+<div class="input-wrap"><span class="input-icon">#</span><input autocomplete="off" id="batch-input" name="batchNumber" placeholder="e.g. ABC123" type="text"/></div>
 </div>
 <button class="btn btn-primary check-submit" id="check-btn" type="submit"><span class="btn-label">Run verification</span><span class="btn-spinner"></span><span class="btn-arrow">→</span></button>
 </form>
@@ -88,11 +88,11 @@
 <div class="scan-review">
 <div><label for="scan-name-field">Detected medicine</label><input id="scan-name-field" type="text"/></div>
 <div><label for="scan-batch-field">Detected batch</label><input id="scan-batch-field" type="text"/></div>
-<p class="scan-confidence-note" id="scan-confidence-note">OCR output should be reviewed before verification.</p>
+<span class="scan-confidence-score" id="scan-confidence-score">Confidence: —</span><p class="scan-confidence-note" id="scan-confidence-note">OCR output should be reviewed before verification.</p>
 </div>
 <div class="scan-actions"><button class="btn btn-primary" id="scan-verify" type="button">Process image</button><button class="btn btn-outline" id="scan-use-btn" type="button">Use in search</button><button class="btn btn-outline" id="scan-rescan-btn" type="button">Scan again</button></div>
 </div>
-<div aria-live="polite" class="result-container" id="result-container"></div>
+<div aria-live="polite" class="result-container" id="result-container"></div><div class="result-export-tools" hidden="True" id="result-export-tools"><button class="btn btn-outline" id="export-csv-btn" type="button">Export CSV</button><button class="btn btn-outline" id="export-pdf-btn" type="button">Export PDF</button></div>
 <div class="filter-card" id="alert-filter-card">
 <div><span class="eyebrow">HISTORICAL VIEW</span><h3>Explore a report period</h3><p>Jump into the available month/year alert index.</p></div>
 <div class="filter-controls"><label>Month<select id="alert-month"><option value="">All months</option></select></label><label>Year<select id="alert-year"><option value="">All years</option></select></label><button class="btn btn-primary" id="alert-filter-btn" type="button">View reports</button><button class="btn btn-outline" id="alert-filter-clear" type="button">Reset</button></div>
@@ -108,19 +108,14 @@
 <div class="stat-item"><span class="stat-kicker">UPDATED</span><strong id="stat-updated">—</strong><span>dataset coverage</span></div>
 </div>
 </section>
-
-
-
-
-
-
-
 <section class="disclaimer" id="disclaimer"><div class="shell"><strong>Important</strong><p>Pharma Shield is an educational/informational project. It is not CDSCO, does not certify medicines, and a “no matching alert” result does not establish that a medicine is safe, genuine, approved, or of standard quality. Always verify regulatory information through official sources.</p></div></section>
 </main>
 <footer><div class="shell footer-shell"><div><a class="brand" href="#home"><span class="brand-mark"><svg viewbox="0 0 48 48"><path d="M24 4 41 10v12c0 10.8-6.8 18.8-17 22C13.8 40.8 7 32.8 7 22V10z"></path><path d="M24 14v20M14 24h20"></path></svg></span><span><strong>PHARMA<span>SHIELD</span></strong><small>Drug Safety Intelligence</small></span></a></div><div class="footer-links"><a href="index.html#check">Check Drug</a><a href="intelligence.html">Intelligence</a><a href="alert-explorer.html">Alert Explorer</a><a href="prohibited.html">Prohibited Drugs</a><a href="about.html">About</a><a href="feedback.html">Feedback</a></div><small>Built for pharmaceutical education &amp; innovation.</small></div></footer>
 <script src="script.js?v=2"></script>
-
 <!-- Pharma Shield Help Assistant: predefined FAQ buttons only; no manual chat input -->
-
-<script src="site.js?v=2"></script></body>
+<script src="site.js?v=2"></script><script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => navigator.serviceWorker.register('./service-worker.js').catch(err => console.warn('PWA service worker:', err)));
+}
+</script></body>
 </html>

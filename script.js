@@ -48,6 +48,7 @@
 
   let DB = { records: [], lastUpdated: null, isDemoData: true };
   let searchIndex = []; // precomputed compact fields for fast search
+  let fuseMedicine = null;
 
   const el = (sel, root = document) => root.querySelector(sel);
   const els = (sel, root = document) => Array.from(root.querySelectorAll(sel));
@@ -140,6 +141,9 @@
       batchCompact: normalizeCompact(r.batchNumber),
       manufacturerCompact: normalizeCompact(r.manufacturer)
     }));
+    fuseMedicine = (window.Fuse && searchIndex.length)
+      ? new window.Fuse(searchIndex, { keys: [{name: "record.medicineName", weight: 0.92},{name: "record.manufacturer", weight: 0.08}], threshold: 0.38, ignoreLocation: true, minMatchCharLength: 2 })
+      : null;
   }
 
   /* ---------------- Search logic ---------------- */
@@ -156,23 +160,20 @@
     return hit ? hit.record : null;
   }
 
-  function findMedicineAlerts(nameCompact, nameWords) {
+  function findMedicineAlerts(nameCompact, nameWords, rawQuery = "") {
     if (!nameCompact) return [];
 
-    return searchIndex
-      .filter((row) => {
-        if (!row.nameCompact) return false;
-        if (row.nameCompact.includes(nameCompact) || nameCompact.includes(row.nameCompact)) {
-          return true;
-        }
-        // multi-word partial match, e.g. "paracetamol 500" -> matches
-        // "Paracetamol Tablets I.P. 500mg"
-        if (nameWords.length > 1) {
-          return nameWords.every((w) => row.nameCompact.includes(normalizeCompact(w)));
-        }
-        return false;
-      })
-      .map((row) => row.record);
+    const exact = searchIndex.filter((row) => {
+      if (!row.nameCompact) return false;
+      if (row.nameCompact.includes(nameCompact) || nameCompact.includes(row.nameCompact)) return true;
+      return nameWords.length > 1 && nameWords.every((w) => row.nameCompact.includes(normalizeCompact(w)));
+    }).map((row) => row.record);
+
+    if (exact.length) return exact;
+    if (fuseMedicine && rawQuery.trim().length >= 3) {
+      return fuseMedicine.search(rawQuery.trim(), { limit: 30 }).map(x => x.item.record);
+    }
+    return [];
   }
 
   function findManufacturerAlerts(nameCompact) {
@@ -207,7 +208,7 @@
     }
 
     // No batch entered: medicine-only searches may show alert history.
-    const medicineMatches = findMedicineAlerts(nameCompact, nameWords);
+    const medicineMatches = findMedicineAlerts(nameCompact, nameWords, nameRaw);
 
     if (medicineMatches.length > 0) {
       return { type: "history", records: medicineMatches, nameDisplay, batchDisplay };
@@ -231,27 +232,22 @@
   /* ---------------- Autocomplete ---------------- */
 
   function getSuggestions(queryRaw, limit = 7) {
-    const q = normalizeCompact(queryRaw);
+    const q = normalizeDisplay(queryRaw);
     if (q.length < 2) return [];
-
-    const seen = new Set();
-    const out = [];
-
-    for (const row of searchIndex) {
-      if (!row.nameCompact.includes(q)) continue;
-      const display = normalizeDisplay(row.record.medicineName);
-      const key = display.toLowerCase();
-      if (seen.has(key)) continue;
-      seen.add(key);
-      out.push(display);
-      if (out.length >= limit) break;
+    if (fuseMedicine) {
+      return fuseMedicine.search(q, { limit }).map(x => normalizeDisplay(x.item.record.medicineName));
     }
-
+    const compact = normalizeCompact(q), seen = new Set(), out = [];
+    for (const row of searchIndex) {
+      if (!row.nameCompact.includes(compact)) continue;
+      const display = normalizeDisplay(row.record.medicineName), key = display.toLowerCase();
+      if (seen.has(key)) continue; seen.add(key); out.push(display); if (out.length >= limit) break;
+    }
     return out;
   }
 
   function initAutocomplete() {
-    const input = el("#medicine-name");
+    const input = el("#medicine-input");
     const list = el("#medicine-suggestions");
     if (!input || !list) return;
 
@@ -322,7 +318,7 @@
       </aside>`;
 
     return `
-      <article class="result-card status-alert" role="alert">
+      <article class="result-card status-${cat.css}" role="alert">
         <div class="result-topline">
           <span class="result-badge">${cat.emoji} ${cat.key} FOUND</span>
           <span class="result-source-chip">REGULATORY RECORD</span>
@@ -389,12 +385,11 @@
 
     return `
       <article class="result-card status-clear">
-        <span class="result-badge">🟢 NO MATCHING ALERT FOUND</span>
+        <span class="result-badge status-badge--neutral">🔵 NO MATCHING ALERT FOUND</span>
         <p class="result-message">${message}</p>
         <p class="result-note">
-          No matching record was found in the Pharma Shield database. This does <strong>NOT</strong> certify
-          that the medicine is safe, genuine, approved, or of standard quality. Try checking the spelling,
-          or search using the exact batch number. Always verify through official CDSCO sources.
+          No matching record was found in the CDSCO alert index. <strong>Note: This does not constitute an official safety or quality certification.</strong>
+          Try checking the spelling or search using the exact batch number. Always verify through official CDSCO sources.
         </p>
         <div class="result-actions">
           <button class="btn btn-outline" type="button" data-print>🖨 Print result</button>
@@ -444,6 +439,9 @@
 
     container.innerHTML = html;
     container.hidden = false;
+    const exportTools = el("#result-export-tools");
+    if (exportTools) exportTools.hidden = !(outcome.type === "alert" || outcome.type === "history" || outcome.type === "manufacturer" || outcome.type === "clear");
+    window.__pharmaShieldLastOutcome = outcome;
     container.scrollIntoView({ behavior: "smooth", block: "start" });
 
     const printBtn = el("[data-print]", container);
@@ -702,8 +700,8 @@
     els("[data-history-index]", wrap).forEach((btn) => {
       btn.addEventListener("click", () => {
         const entry = history[Number(btn.dataset.historyIndex)];
-        el("#medicine-name").value = entry.name || "";
-        el("#batch-number").value = entry.batch || "";
+        el("#medicine-input").value = entry.name || "";
+        el("#batch-input").value = entry.batch || "";
         runSearch();
       });
     });
@@ -733,8 +731,8 @@
   /* ---------------- Search flow ---------------- */
 
   function runSearch() {
-    const nameInput = el("#medicine-name").value;
-    const batchInput = el("#batch-number").value;
+    const nameInput = el("#medicine-input").value;
+    const batchInput = el("#batch-input").value;
     const btn = el("#check-btn");
     const suggestions = el("#medicine-suggestions");
     if (suggestions) suggestions.hidden = true;
@@ -1757,6 +1755,13 @@
         verifyBlock.hidden = false;
         nameField.value = parsed.medicineName;
         batchField.value = parsed.batchNumber;
+        // Autofill the editable main search fields immediately; the user can correct OCR before searching.
+        el("#medicine-input").value = parsed.medicineName || "";
+        el("#batch-input").value = parsed.batchNumber || "";
+
+        const confidence = Math.max(0, Math.min(100, Math.round(parsed.meanConfidence ?? (parsed.confident ? 85 : 55))));
+        const scoreEl = el("#scan-confidence-score");
+        if (scoreEl) scoreEl.textContent = `Confidence: ${confidence}%`;
 
         let noteText;
         let noteClass;
@@ -1767,10 +1772,10 @@
             : "Text was read clearly. OCR is never 100% accurate — please confirm both fields before searching.";
           noteClass = "scan-confidence scan-confidence--ok";
         } else if (parsed.medicineName || parsed.batchNumber) {
-          noteText = "Please check or edit the extracted medicine name and batch number before searching.";
+          noteText = parsed.batchNumber ? "Please check or edit the extracted medicine name and batch number before searching." : "Batch number unreadable. Please edit or enter manually.";
           noteClass = "scan-confidence scan-confidence--low";
         } else {
-          noteText = "Nothing readable was extracted. Please check or edit the medicine name and batch number before searching, or try a sharper, well-lit photo.";
+          noteText = "Batch number unreadable. Please edit or enter manually. Try a sharper, well-lit photo if needed.";
           noteClass = "scan-confidence scan-confidence--low";
         }
 
@@ -1795,7 +1800,8 @@
         verifyBlock.hidden = false;
         nameField.value = "";
         batchField.value = "";
-        confidenceNote.textContent = "OCR failed — please enter the medicine name and batch number manually.";
+        confidenceNote.textContent = "Batch number unreadable. Please edit or enter manually.";
+        const scoreEl = el("#scan-confidence-score"); if (scoreEl) scoreEl.textContent = "Confidence: 0%";
         confidenceNote.className = "scan-confidence scan-confidence--low";
       }
     }
@@ -1806,8 +1812,8 @@
     });
 
     useBtn.addEventListener("click", () => {
-      el("#medicine-name").value = nameField.value;
-      el("#batch-number").value = batchField.value;
+      el("#medicine-input").value = nameField.value;
+      el("#batch-input").value = batchField.value;
       panel.hidden = true;
       reset();
       el("#search-form").scrollIntoView({ behavior: "smooth", block: "start" });
@@ -1935,3 +1941,69 @@
 
 
 
+
+
+/* ===== Export tools: search result CSV/PDF ===== */
+(function(){
+  function esc(v){return String(v??"").replace(/"/g,'""');}
+  function downloadBlob(name,type,text){const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([text],{type}));a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);}
+  function recordsFromOutcome(o){
+    if(!o) return [];
+    if(o.record) return [o.record];
+    if(Array.isArray(o.records)) return o.records;
+    return [{medicineName:o.nameDisplay||"",batchNumber:o.batchDisplay||"",category:"No Matching Alert Found",reason:"No matching record found in the CDSCO alert index."}];
+  }
+  function csv(rows){
+    const headers=["Medicine Name","Batch Number","Category","Manufacturer","Reason / Test Failure","Alert Month","Alert Year","Source File"];
+    return [headers.join(","),...rows.map(r=>[r.medicineName,r.batchNumber,r.category,r.manufacturer,r.reason,r.alertMonth,r.alertYear,r.sourceFile].map(x=>'"'+esc(x)+'"').join(","))].join("\
+");
+  }
+  async function pdf(rows,title){
+    if(window.jspdf&&window.jspdf.jsPDF){
+      const doc=new window.jspdf.jsPDF({unit:"pt",format:"a4"}); let y=44;
+      doc.setFontSize(16);doc.text(title,40,y);y+=24;doc.setFontSize(9);
+      rows.forEach((r,i)=>{const lines=doc.splitTextToSize(`${i+1}. ${r.medicineName||"No match"} | Batch: ${r.batchNumber||"—"} | ${r.category||"—"} | ${r.reason||"—"}`,510); if(y+lines.length*13>790){doc.addPage();y=44;} doc.text(lines,40,y);y+=lines.length*13+8;});
+      doc.save("pharma-shield-search-result.pdf");
+    } else window.print();
+  }
+  document.addEventListener("click",e=>{
+    if(e.target.closest("#export-csv-btn")){const rows=recordsFromOutcome(window.__pharmaShieldLastOutcome);downloadBlob("pharma-shield-search-result.csv","text/csv;charset=utf-8",csv(rows));}
+    if(e.target.closest("#export-pdf-btn")){pdf(recordsFromOutcome(window.__pharmaShieldLastOutcome),"Pharma Shield — Search Result");}
+  });
+})();
+
+
+/* ===== NSQ Result Print Controller ===== */
+(function(){
+  "use strict";
+  function initNSQPrint(){
+    const btn=document.getElementById("print-nsq-result");
+    if(!btn) return;
+    const findResult=()=>{
+      const candidates=["#result",".search-result","#search-result",".result-card",".result-container"];
+      for(const sel of candidates){const el=document.querySelector(sel);if(el)return el}
+      return null;
+    };
+    btn.addEventListener("click",()=>{
+      const result=findResult();
+      if(!result) return;
+      result.setAttribute("data-print-target","true");
+      document.body.classList.add("nsq-print-mode");
+      window.print();
+    });
+    window.addEventListener("afterprint",()=>document.body.classList.remove("nsq-print-mode"));
+
+    // Observe result rendering. The button is only available after an actual result exists.
+    const observer=new MutationObserver(()=>{
+      const result=findResult();
+      if(!result) return;
+      const text=(result.innerText||"").toUpperCase();
+      const isNoMatch=text.includes("NO MATCHING ALERT FOUND") || text.includes("NO ALERT FOUND");
+      // Print is intended for actual matched/NSQ results, not a no-match certification.
+      btn.hidden=isNoMatch;
+    });
+    observer.observe(document.body,{subtree:true,childList:true,characterData:true});
+  }
+  if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",initNSQPrint);
+  else initNSQPrint();
+})();

@@ -8,7 +8,7 @@
 <link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;family=Manrope:wght@600;700;800&amp;display=swap" rel="stylesheet"/>
 <link href="style.css?v=2" rel="stylesheet"/>
-</head>
+<link href="manifest.json" rel="manifest"/><meta content="#0d3032" name="theme-color"/></head>
 <body>
 <div aria-live="polite" class="toast-region" id="toast-region"></div>
 <header class="site-header" id="site-header"><div class="shell header-shell">
@@ -24,12 +24,11 @@
 <div class="hero-meta"><span>SECTION 26A</span><span>MINISTRY OF HEALTH &amp; FAMILY WELFARE</span><span>444 SOURCE ENTRIES</span></div>
 </div></section>
 <section class="prohibited-shell"><div class="shell">
-<div class="prohibited-search-panel"><label for="prohibited-search">SEARCH THE REGULATORY INDEX</label><div class="prohibited-search"><input autocomplete="off" id="prohibited-search" placeholder="Search drug name, notification, date or details…" type="search"/><button class="btn btn-primary" onclick="document.getElementById('prohibited-search').dispatchEvent(new Event('input',{bubbles:true}))" type="button">Search database →</button></div><div class="prohibited-count" id="prohibited-count">Loading regulatory records… <span aria-hidden="true" id="prohibited-total"></span></div></div>
+<div class="prohibited-search-panel"><label for="prohibited-search">SEARCH THE REGULATORY INDEX</label><div class="prohibited-search"><input autocomplete="off" id="prohibited-search" placeholder="Search drug name, notification, date or details…" type="search"/><button class="btn btn-primary" onclick="document.getElementById('prohibited-search').dispatchEvent(new Event('input',{bubbles:true}))" type="button">Search database →</button></div><div class="prohibited-count" id="prohibited-count">Loading regulatory records… <span aria-hidden="true" id="prohibited-total"></span></div><div aria-label="Quick classification filters" class="prohibited-filter-tags" id="prohibited-filter-tags"><button class="filter-tag" data-prohibited-filter="all" type="button">All entries</button><button class="filter-tag" data-prohibited-filter="fdc" type="button">Banned FDCs</button><button class="filter-tag" data-prohibited-filter="withdrawn" type="button">Withdrawn Formulations</button><button class="filter-tag" data-prohibited-filter="narcotic" type="button">Narcotic / Psychotropic</button></div></div>
 <div class="prohibited-table-wrap" style="margin-top:18px"><table class="prohibited-table"><thead><tr><th>Sr.</th><th>Drug / formulation</th><th>Notification</th><th>Date</th><th>Regulatory details</th></tr></thead><tbody id="prohibited-tbody"><tr><td colspan="5" style="text-align:center;padding:45px">Loading the 444-entry regulatory database…</td></tr></tbody></table><div class="prohibited-pagination" id="prohibited-pagination"></div></div>
 <div class="prohibited-notes" hidden="" id="prohibited-notes-wrap"><span class="eyebrow">DOCUMENT NOTES</span><h3>Important source notes</h3><ul id="prohibited-notes-list"></ul></div>
 </div></section>
 </main>
-
 <footer>
 <div class="shell footer-shell">
 <div>
@@ -49,9 +48,7 @@
 <small>Built for pharmaceutical education &amp; innovation.</small>
 </div>
 </footer>
-
 <script src="prohibited.js?v=2"></script>
-
 <div aria-label="Pharma Shield Help Assistant" class="ps-help-assistant" id="ps-help-assistant">
 <button aria-controls="ps-help-panel" aria-expanded="false" class="ps-help-toggle" id="ps-help-toggle" type="button">
 <span class="ps-help-toggle-icon">?</span><span>Need Help?</span>
@@ -76,4 +73,8 @@
 <div class="ps-help-answer" hidden="" id="ps-help-answer"></div>
 </div>
 </div>
-<script src="site.js?v=2"></script></body></html>
+<script src="site.js?v=2"></script><script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => navigator.serviceWorker.register('./service-worker.js').catch(err => console.warn('PWA service worker:', err)));
+}
+</script></body></html>

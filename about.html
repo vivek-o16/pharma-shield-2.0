@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width,initial-scale=1" name="viewport"/><title>Pharma Shield — About</title><meta content="Meet the student project team and understand what Pharma Shield is built to do." name="description"/><link href="style.css?v=2" rel="stylesheet"/></head><body>
+
+<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width,initial-scale=1" name="viewport"/><title>Pharma Shield — About</title><meta content="Meet the student project team and understand what Pharma Shield is built to do." name="description"/><link href="style.css?v=2" rel="stylesheet"/><link href="manifest.json" rel="manifest"/><meta content="#0d3032" name="theme-color"/></head><body>
 <header class="site-header" id="site-header">
 <div class="shell header-shell">
 <a aria-label="Pharma Shield home" class="brand" href="index.html#home">
@@ -77,7 +78,6 @@
 <div class="ps-help-answer" hidden="" id="ps-help-answer"></div>
 </div>
 </div>
-
 <footer>
 <div class="shell footer-shell">
 <div>
@@ -97,4 +97,8 @@
 <small>Built for pharmaceutical education &amp; innovation.</small>
 </div>
 </footer>
-<script src="site.js?v=2"></script></body></html>
+<script src="site.js?v=2"></script><script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => navigator.serviceWorker.register('./service-worker.js').catch(err => console.warn('PWA service worker:', err)));
+}
+</script></body></html>

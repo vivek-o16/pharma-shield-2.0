@@ -1,0 +1,23 @@
+{
+  "name": "Pharma Shield 2.0",
+  "short_name": "Pharma Shield",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#f5f8f7",
+  "theme_color": "#0d3032",
+  "description": "Drug safety intelligence using CDSCO-derived alert data.",
+  "icons": [
+    {
+      "src": "./icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "./icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

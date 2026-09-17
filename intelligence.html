@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width,initial-scale=1" name="viewport"/><title>Pharma Shield — Intelligence</title><meta content="Explore patterns across the loaded regulatory alert archive." name="description"/><link href="style.css?v=2" rel="stylesheet"/></head><body>
+
+<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width,initial-scale=1" name="viewport"/><title>Pharma Shield — Intelligence</title><meta content="Explore patterns across the loaded regulatory alert archive." name="description"/><link href="style.css?v=2" rel="stylesheet"/><link href="manifest.json" rel="manifest"/><meta content="#0d3032" name="theme-color"/><script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script></head><body>
 <header class="site-header" id="site-header">
 <div class="shell header-shell">
 <a aria-label="Pharma Shield home" class="brand" href="index.html#home">
@@ -21,19 +22,7 @@
 <button aria-expanded="false" aria-label="Toggle navigation" class="nav-toggle" id="nav-toggle"><span></span><span></span><span></span></button>
 </div>
 </header>
-<main><section class="ps-page-hero ps-page-hero--dark"><div class="shell"><span class="eyebrow">02 · INTELLIGENCE</span><h1>Drug Safety Intelligence</h1><p>Explore patterns across the loaded regulatory alert archive.</p></div></section><section class="section-pad ps-page-content"><div class="shell">
-<div class="ps-page-intro-note"><strong>Live dataset view.</strong> These charts are calculated in the browser from the bundled <code>drugAlerts.json</code> dataset.</div>
-<div class="shell">
-<div class="section-head"><span class="eyebrow">02 · INTELLIGENCE</span><h2>See the signal behind the records.</h2><p>Turn the alert archive into patterns you can explore—not just numbers on a page.</p></div>
-<div class="insight-grid">
-<article class="chart-panel chart-wide"><div class="panel-top"><div><span>ALERT ACTIVITY</span><h3>Yearly distribution</h3></div><span class="panel-tag">REAL DATA</span></div><div aria-label="Yearly alert distribution" class="chart-wrap" id="chart-years"></div></article>
-<article class="chart-panel"><div class="panel-top"><div><span>CLASSIFICATION</span><h3>Alert mix</h3></div></div><div aria-label="Alert classification split" class="chart-wrap" id="chart-category-split"></div></article>
-<article class="chart-panel"><div class="panel-top"><div><span>MANUFACTURER LANDSCAPE</span><h3>Most represented</h3></div></div><div aria-label="Most represented manufacturers" class="chart-wrap" id="chart-manufacturers"></div></article>
-<article class="chart-panel chart-wide"><div class="panel-top"><div><span>QUALITY SIGNAL</span><h3>Common failure reasons</h3></div></div><div aria-label="Common failure reasons" class="chart-wrap tall" id="chart-reasons"></div></article>
-</div>
-<div class="historical-card" id="historical-database"><div><span class="eyebrow">ARCHIVE</span><h3>Historical database</h3><p>Coverage and alert counts calculated from the loaded dataset.</p></div><div class="archive-metrics"><span><b id="hist-years">—</b> years</span><span><b id="hist-total">—</b> total</span><span><b id="hist-nsq">—</b> NSQ</span><span><b id="hist-alerted">—</b> alerted</span></div><small id="hist-coverage-note"></small></div>
-</div>
-</div></section></main>
+<main><section class="ps-page-hero ps-page-hero--dark"><div class="shell"><span class="eyebrow">02 · INTELLIGENCE</span><h1>Drug Safety Intelligence</h1><p>Explore patterns across the loaded regulatory alert archive.</p></div></section><section class="section-pad ps-page-content"><div class="shell"><div class="ps-page-intro-note"><strong>Live dataset intelligence.</strong> Charts below are generated from the bundled <code>drugAlerts.json</code> dataset.</div><div class="intelligence-dashboard"><div class="dashboard-grid"><article class="chart-panel chart-panel-light"><div class="panel-top"><div><span>QUALITY SIGNAL</span><h3>Top Reasons for NSQ Listings</h3></div><span class="panel-tag">NSQ ONLY</span></div><div class="chart-canvas-wrap"><canvas aria-label="Top reasons for NSQ listings" id="nsq-reasons-chart"></canvas></div><div class="chart-help">Hover a segment for a plain-language explanation of the pharmaceutical test term.</div></article><article class="chart-panel chart-panel-light"><div class="panel-top"><div><span>ALERT ACTIVITY</span><h3>Monthly CDSCO Drug Alert Trends</h3></div><span class="panel-tag">REAL DATA</span></div><div class="chart-canvas-wrap"><canvas aria-label="Monthly CDSCO drug alert trends" id="monthly-trend-chart"></canvas></div></article></div><div class="intelligence-metrics" id="intelligence-metrics"></div></div></div></section></main>
 <div aria-label="Pharma Shield Help Assistant" class="ps-help-assistant" id="ps-help-assistant">
 <button aria-controls="ps-help-panel" aria-expanded="false" class="ps-help-toggle" id="ps-help-toggle" type="button">
 <span class="ps-help-toggle-icon">?</span><span>Need Help?</span>
@@ -58,7 +47,6 @@
 <div class="ps-help-answer" hidden="" id="ps-help-answer"></div>
 </div>
 </div>
-
 <footer>
 <div class="shell footer-shell">
 <div>
@@ -78,4 +66,8 @@
 <small>Built for pharmaceutical education &amp; innovation.</small>
 </div>
 </footer>
-<script src="site.js?v=2"></script><script src="intelligence.js?v=2"></script></body></html>
+<script src="site.js?v=2"></script><script src="intelligence.js?v=2"></script><script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => navigator.serviceWorker.register('./service-worker.js').catch(err => console.warn('PWA service worker:', err)));
+}
+</script></body></html>

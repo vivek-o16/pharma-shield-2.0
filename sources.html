@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width,initial-scale=1" name="viewport"/><title>Pharma Shield — Sources</title><meta content="See what data powers Pharma Shield and how it should be interpreted." name="description"/><link href="style.css?v=2" rel="stylesheet"/></head><body>
+
+<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width,initial-scale=1" name="viewport"/><title>Pharma Shield — Sources</title><meta content="See what data powers Pharma Shield and how it should be interpreted." name="description"/><link href="style.css?v=2" rel="stylesheet"/><link href="manifest.json" rel="manifest"/><meta content="#0d3032" name="theme-color"/></head><body>
 <header class="site-header" id="site-header">
 <div class="shell header-shell">
 <a aria-label="Pharma Shield home" class="brand" href="index.html#home">
@@ -19,6 +20,16 @@
 </nav>
 <a class="header-cta" href="index.html#check">Open Drug Check <span>↗</span></a>
 <button aria-expanded="false" aria-label="Toggle navigation" class="nav-toggle" id="nav-toggle"><span></span><span></span><span></span></button>
+</div>
+
+<div class="source-list-card ps-official-source">
+  <span class="eyebrow">OFFICIAL GOVERNMENT SOURCE</span>
+  <h2>CDSCO Drug Alerts</h2>
+  <p>For the complete and current regulatory alert archive, visit the official Central Drugs Standard Control Organization website.</p>
+  <div class="ps-official-links">
+    <a class="btn btn-primary" href="https://www.cdsco.gov.in/opencms/opencms/en/Alerts/" target="_blank" rel="noopener noreferrer">Open Official CDSCO Alerts ↗</a>
+    <a class="btn" href="https://www.cdsco.gov.in/opencms/opencms/en/consumer/NSQ-Alerts/" target="_blank" rel="noopener noreferrer">Open CDSCO NSQ Alerts ↗</a>
+  </div>
 </div>
 </header>
 <main><section class="ps-page-hero"><div class="shell"><span class="eyebrow">07 · SOURCES</span><h1>Source List &amp; Data Notes</h1><p>See what data powers Pharma Shield and how it should be interpreted.</p></div></section><section class="section-pad ps-page-content"><div class="shell">
@@ -76,7 +87,6 @@
 <div class="ps-help-answer" hidden="" id="ps-help-answer"></div>
 </div>
 </div>
-
 <footer>
 <div class="shell footer-shell">
 <div>
@@ -96,4 +106,8 @@
 <small>Built for pharmaceutical education &amp; innovation.</small>
 </div>
 </footer>
-<script src="site.js?v=2"></script></body></html>
+<script src="site.js?v=2"></script><script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => navigator.serviceWorker.register('./service-worker.js').catch(err => console.warn('PWA service worker:', err)));
+}
+</script></body></html>
