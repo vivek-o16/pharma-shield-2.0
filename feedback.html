@@ -23,6 +23,81 @@
 </div>
 </header>
 <main><section class="ps-page-hero ps-page-hero--dark"><div class="shell"><span class="eyebrow">09 · FEEDBACK</span><h1>Feedback &amp; Improvement</h1><p>Send interface and project feedback through the built-in frontend feedback capture.</p></div></section><section class="section-pad ps-page-content"><div class="shell">
+
+<div class="reviews-section" id="community-reviews">
+  <div class="section-head">
+    <span class="eyebrow">10 · COMMUNITY</span>
+    <h2>Community Reviews</h2>
+    <p>Share your experience with Pharma Shield. Reviews are public and visible to other visitors.</p>
+  </div>
+
+  <div class="reviews-overview">
+    <div class="reviews-score">
+      <strong id="review-average">—</strong>
+      <span id="review-stars" aria-label="Average rating">☆☆☆☆☆</span>
+      <small><span id="review-count">0</span> public reviews</small>
+    </div>
+    <div class="review-bars" id="review-bars" aria-label="Rating distribution"></div>
+  </div>
+
+  <div class="reviews-layout">
+    <form class="ps-feedback-form review-form" id="review-form">
+      <span class="eyebrow">WRITE A REVIEW</span>
+      <h3>How was your experience?</h3>
+      <label for="review-name">Display name</label>
+      <input id="review-name" maxlength="60" placeholder="e.g. Vivek" required type="text"/>
+
+      <label>Rating</label>
+      <div class="star-picker" id="star-picker" role="radiogroup" aria-label="Rating from 1 to 5">
+        <button type="button" data-rating="1" aria-label="1 star">★</button>
+        <button type="button" data-rating="2" aria-label="2 stars">★</button>
+        <button type="button" data-rating="3" aria-label="3 stars">★</button>
+        <button type="button" data-rating="4" aria-label="4 stars">★</button>
+        <button type="button" data-rating="5" aria-label="5 stars">★</button>
+      </div>
+      <input id="review-rating" type="hidden" value="5"/>
+
+      <label for="review-role">You are</label>
+      <select id="review-role">
+        <option>Pharmacy Student</option>
+        <option>Pharmacist</option>
+        <option>Healthcare Professional</option>
+        <option>Educator</option>
+        <option>Other</option>
+      </select>
+
+      <label for="review-text">Review</label>
+      <textarea id="review-text" maxlength="1000" placeholder="Tell other visitors what you found useful..." required rows="5"></textarea>
+
+      <button class="btn btn-primary" type="submit">Publish review →</button>
+      <p aria-live="polite" class="feedback-status" id="review-status"></p>
+      <p class="review-note">Please do not post patient information, phone numbers, passwords, or other sensitive personal information.</p>
+    </form>
+
+    <div class="reviews-list-wrap">
+      <div class="reviews-list-head">
+        <div><span class="eyebrow">PUBLIC REVIEWS</span><h3>What visitors say</h3></div>
+        <span class="reviews-live">● LIVE</span>
+      </div>
+      <div class="reviews-list" id="reviews-list" aria-live="polite"></div>
+    </div>
+  </div>
+</div>
+
+<div class="admin-reviews-section" id="admin-reviews" hidden>
+  <div class="section-head">
+    <span class="eyebrow">ADMIN</span>
+    <h2>Review Management</h2>
+    <p>Remove reviews that violate the community guidelines. There is no approval queue.</p>
+  </div>
+  <div class="admin-toolbar">
+    <input id="admin-key" type="password" autocomplete="off" placeholder="Admin key"/>
+    <button class="btn btn-primary" id="admin-load" type="button">Open review manager</button>
+    <span id="admin-status" aria-live="polite"></span>
+  </div>
+  <div class="admin-review-list" id="admin-review-list"></div>
+</div>
+
 <div class="feedback-page-grid">
 <div class="feedback-copy">
 <span class="eyebrow">09 · FEEDBACK LOOP</span>
@@ -93,4 +168,5 @@
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => navigator.serviceWorker.register('./service-worker.js').catch(err => console.warn('PWA service worker:', err)));
 }
-</script></body></html>
+</script><script src="review-system.js?v=1"></script>
+</body></html>
