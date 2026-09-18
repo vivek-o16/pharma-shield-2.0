@@ -319,6 +319,18 @@
 
     return `
       <article class="result-card status-${cat.css}" role="alert">
+        <div class="print-report-header" aria-hidden="true">
+          <div class="print-brand">
+            <div class="print-brand-mark">✚</div>
+            <div>
+              <strong>PHARMA<span>SHIELD</span></strong>
+              <small>Drug Safety Intelligence</small>
+            </div>
+          </div>
+          <div class="print-slogan">Don’t just search a medicine. <b>Understand its record.</b></div>
+          <div class="print-header-rule"></div>
+          <div class="print-report-title">REGULATORY DRUG QUALITY ALERT REPORT</div>
+        </div>
         <div class="result-topline">
           <span class="result-badge">${cat.emoji} ${cat.key} FOUND</span>
           <span class="result-source-chip">REGULATORY RECORD</span>
