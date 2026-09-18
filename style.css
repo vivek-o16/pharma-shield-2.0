@@ -180,109 +180,109 @@ button,input,select,textarea{touch-action:manipulation}@media(max-width:620px){b
 
 
 /* ===== NSQ Result Print ===== */
-.print-report-header{display:none}
+.print-only-report-header{display:none}
 
-.nsq-print-btn{
-  min-height:48px;padding:12px 18px;border:0;border-radius:12px;
-  font:inherit;font-weight:800;cursor:pointer;
-  background:#b91c1c;color:#fff;box-shadow:0 8px 22px rgba(185,28,28,.18);
-  margin-top:12px;
-}
-.nsq-print-btn[hidden]{display:none!important}
-.nsq-print-fallback{position:relative}
 @media print{
-  @page{size:A4;margin:14mm 13mm}
+  @page{size:A4 portrait;margin:14mm 14mm 16mm}
   html,body{background:#fff!important}
-  body *{visibility:hidden!important}
-  body.nsq-print-mode #result,
-  body.nsq-print-mode #result *{
-    visibility:visible!important;
+  body.nsq-print-mode *{visibility:hidden!important}
+  body.nsq-print-mode #result-container,
+  body.nsq-print-mode #result-container .result-card,
+  body.nsq-print-mode #result-container .result-card *{visibility:visible!important}
+
+  body.nsq-print-mode #result-container{
+    position:absolute!important;
+    left:0!important;top:0!important;
+    width:100%!important;
+    margin:0!important;padding:0!important;
+    background:#fff!important;
   }
-  body.nsq-print-mode #result{
-    position:absolute!important;left:0!important;top:0!important;width:100%!important;
-    margin:0!important;padding:0!important;box-sizing:border-box!important;
-    background:#fff!important;color:#111!important;box-shadow:none!important;border:0!important;
+
+  body.nsq-print-mode #result-container .result-card{
+    position:relative!important;
+    width:100%!important;
+    margin:0!important;padding:0!important;
+    box-sizing:border-box!important;
+    background:#fff!important;color:#111!important;
+    border:0!important;box-shadow:none!important;
   }
-  body.nsq-print-mode .result-card{
-    width:100%!important;box-sizing:border-box!important;margin:0!important;padding:0!important;
-    border:0!important;border-top:0!important;border-radius:0!important;box-shadow:none!important;
-    animation:none!important;
-  }
-  body.nsq-print-mode .print-report-header{
-    display:block!important;visibility:visible!important;margin:0 0 18px!important;
+
+  body.nsq-print-mode #result-container .print-only-report-header{
+    display:block!important;
+    margin:0 0 18px!important;
+    padding:0 0 12px!important;
     color:#0d3032!important;
   }
-  body.nsq-print-mode .print-brand{
+  body.nsq-print-mode #result-container .print-brand-line{
     display:flex!important;align-items:center!important;gap:10px!important;
   }
-  body.nsq-print-mode .print-brand-mark{
+  body.nsq-print-mode #result-container .print-brand-mark{
     width:34px!important;height:34px!important;border:2px solid #0d3032!important;
     border-radius:9px!important;display:flex!important;align-items:center!important;
-    justify-content:center!important;font-size:19px!important;font-weight:900!important;
+    justify-content:center!important;font-weight:900!important;font-size:18px!important;
   }
-  body.nsq-print-mode .print-brand strong{
-    display:block!important;font-family:Arial,sans-serif!important;font-size:18pt!important;
-    letter-spacing:.02em!important;line-height:1!important;color:#0d3032!important;
+  body.nsq-print-mode #result-container .print-brand-line strong{
+    display:block!important;font-size:19pt!important;line-height:1!important;
+    letter-spacing:.02em!important;
   }
-  body.nsq-print-mode .print-brand strong span{color:#087f73!important}
-  body.nsq-print-mode .print-brand small{
-    display:block!important;font-size:8pt!important;letter-spacing:.08em!important;
-    text-transform:uppercase!important;color:#647572!important;margin-top:4px!important;
+  body.nsq-print-mode #result-container .print-brand-line strong span{color:#087f73!important}
+  body.nsq-print-mode #result-container .print-brand-line small{
+    display:block!important;margin-top:3px!important;font-size:8.5pt!important;
+    color:#5c706d!important;letter-spacing:.08em!important;text-transform:uppercase!important;
   }
-  body.nsq-print-mode .print-slogan{
-    margin-top:11px!important;font-size:9pt!important;color:#536360!important;
+  body.nsq-print-mode #result-container .print-slogan{
+    margin-top:9px!important;font-size:9.5pt!important;font-weight:700!important;color:#405653!important;
   }
-  body.nsq-print-mode .print-header-rule{
-    border-top:2px solid #0d3032!important;margin:12px 0 10px!important;
+  body.nsq-print-mode #result-container .print-header-rule{
+    margin-top:10px!important;border-top:1.5px solid #0d3032!important;
   }
-  body.nsq-print-mode .print-report-title{
-    font-size:9pt!important;font-weight:900!important;letter-spacing:.12em!important;
-    color:#0d3032!important;
+
+  body.nsq-print-mode #result-container .result-topline{
+    display:flex!important;justify-content:space-between!important;align-items:center!important;
+    gap:12px!important;margin-bottom:14px!important;
   }
-  body.nsq-print-mode .result-topline{
-    display:flex!important;align-items:center!important;justify-content:space-between!important;
-    margin-bottom:10px!important;
+  body.nsq-print-mode #result-container .result-source-chip{
+    border:1px solid #cfd9d7!important;border-radius:999px!important;padding:5px 9px!important;
+    font-size:7.5pt!important;font-weight:800!important;letter-spacing:.08em!important;
   }
-  body.nsq-print-mode .result-badge{
-    display:inline-flex!important;padding:5px 9px!important;border:1px solid #dc2626!important;
-    background:#fff!important;color:#b91c1c!important;font-size:8pt!important;
+  body.nsq-print-mode #result-container .result-title{
+    margin:0 0 7px!important;font-size:18pt!important;line-height:1.2!important;color:#0d3032!important;
   }
-  body.nsq-print-mode .result-source-chip{
-    display:inline-block!important;font-size:7pt!important;border:1px solid #ccd8d5!important;
-    color:#536360!important;padding:5px 8px!important;border-radius:999px!important;
+  body.nsq-print-mode #result-container .result-message{
+    margin:0 0 17px!important;font-size:10pt!important;line-height:1.5!important;color:#243b39!important;
   }
-  body.nsq-print-mode .result-title{
-    font-size:18pt!important;line-height:1.2!important;margin:8px 0 5px!important;color:#111!important;
+
+  body.nsq-print-mode #result-container .result-grid{
+    display:block!important;margin:0!important;padding:0!important;
+    width:100%!important;
+    border:1px solid #d7e1df!important;border-radius:10px!important;
+    overflow:hidden!important;
   }
-  body.nsq-print-mode .result-message{
-    font-size:9.5pt!important;line-height:1.45!important;margin:0 0 14px!important;
-    color:#3f4b49!important;max-width:none!important;
-  }
-  body.nsq-print-mode #result .result-grid{
-    display:block!important;width:100%!important;margin:0!important;
-    background:#fff!important;border:1px solid #cfdad7!important;border-radius:8px!important;
-    overflow:visible!important;
-  }
-  body.nsq-print-mode #result .result-grid>div{
+  body.nsq-print-mode #result-container .result-grid .result-field{
     display:block!important;width:100%!important;box-sizing:border-box!important;
-    padding:10px 12px!important;margin:0!important;border:0!important;
-    border-bottom:1px solid #dce4e2!important;background:#fff!important;
-    page-break-inside:avoid!important;
+    padding:10px 13px!important;margin:0!important;
+    border:0!important;border-bottom:1px solid #d7e1df!important;
+    background:#fff!important;
+    break-inside:avoid!important;
   }
-  body.nsq-print-mode #result .result-grid>div:last-child{border-bottom:0!important}
-  body.nsq-print-mode #result dt{
-    display:block!important;font-size:7.5pt!important;font-weight:900!important;
-    text-transform:uppercase!important;letter-spacing:.08em!important;color:#667572!important;
-    margin:0 0 4px!important;
+  body.nsq-print-mode #result-container .result-grid .result-field:last-child{border-bottom:0!important}
+  body.nsq-print-mode #result-container .result-grid dt{
+    display:block!important;margin:0 0 4px!important;
+    font-size:7.5pt!important;line-height:1.2!important;font-weight:900!important;
+    letter-spacing:.08em!important;text-transform:uppercase!important;color:#617572!important;
   }
-  body.nsq-print-mode #result dd{
-    display:block!important;margin:0!important;font-size:9.5pt!important;
-    line-height:1.45!important;font-weight:700!important;color:#111!important;
+  body.nsq-print-mode #result-container .result-grid dd{
+    display:block!important;margin:0!important;font-size:10pt!important;
+    line-height:1.45!important;color:#111!important;white-space:normal!important;
     overflow-wrap:anywhere!important;
   }
-  body.nsq-print-mode .shield-intelligence,
-  body.nsq-print-mode .result-actions,
-  body.nsq-print-mode .result-note{display:none!important}
+  body.nsq-print-mode #result-container .result-grid dd.mono{font-family:monospace!important;font-weight:700!important}
+
+  /* Print ONLY the report; explanatory UI, actions and exports stay on screen only. */
+  body.nsq-print-mode #result-container .shield-intelligence,
+  body.nsq-print-mode #result-container .result-actions,
+  body.nsq-print-mode #result-container .result-note,
+  body.nsq-print-mode #result-export-tools{display:none!important}
 }
 
 /* ===== Formatting fixes: consistent dark-hero kicker color,
