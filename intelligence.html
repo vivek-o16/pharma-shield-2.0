@@ -22,7 +22,28 @@
 <button aria-expanded="false" aria-label="Toggle navigation" class="nav-toggle" id="nav-toggle"><span></span><span></span><span></span></button>
 </div>
 </header>
-<main><section class="ps-page-hero ps-page-hero--dark"><div class="shell"><span class="eyebrow">02 · INTELLIGENCE</span><h1>Drug Safety Intelligence</h1><p>Explore patterns across the loaded regulatory alert archive.</p></div></section><section class="section-pad ps-page-content"><div class="shell"><div class="ps-page-intro-note"><strong>Live dataset intelligence.</strong> Charts below are generated from the bundled <code>drugAlerts.json</code> dataset.</div><div class="intelligence-dashboard"><div class="dashboard-grid"><article class="chart-panel chart-panel-light"><div class="panel-top"><div><span>QUALITY SIGNAL</span><h3>Top Reasons for NSQ Listings</h3></div><span class="panel-tag">NSQ ONLY</span></div><div class="chart-canvas-wrap"><canvas aria-label="Top reasons for NSQ listings" id="nsq-reasons-chart"></canvas></div><div class="chart-help">Hover a segment for a plain-language explanation of the pharmaceutical test term.</div></article><article class="chart-panel chart-panel-light"><div class="panel-top"><div><span>ALERT ACTIVITY</span><h3>Monthly CDSCO Drug Alert Trends</h3></div><span class="panel-tag">REAL DATA</span></div><div class="chart-canvas-wrap"><canvas aria-label="Monthly CDSCO drug alert trends" id="monthly-trend-chart"></canvas></div></article></div><div class="intelligence-metrics" id="intelligence-metrics"></div></div></div></section></main>
+<main>
+<section class="ps-page-hero ps-page-hero--dark"><div class="shell"><span class="eyebrow">02 · INTELLIGENCE</span><h1>Drug Safety Intelligence</h1><p>Explore patterns across the loaded regulatory alert archive.</p></div></section>
+<section class="section-pad ps-page-content">
+<div class="shell">
+  <div class="ps-page-intro-note"><strong>Live dataset intelligence.</strong> All metrics and charts below are calculated from the bundled <code>drugAlerts.json</code> dataset. Missing source values are not treated as invented categories.</div>
+  <div class="intelligence-dashboard">
+    <div class="intelligence-metrics" id="intelligence-metrics">
+      <div><b>—</b><span>Alert Index</span></div><div><b>—</b><span>NSQ Signals</span></div><div><b>—</b><span>Manufacturers</span></div><div><b>—</b><span>Updated</span></div>
+    </div>
+    <div class="dashboard-grid">
+      <article class="chart-panel chart-panel-light chart-panel-wide"><div class="panel-top"><div><span>ALERT ACTIVITY</span><h3>Monthly CDSCO Drug Alert Trends</h3></div><span class="panel-tag">REAL DATA</span></div><div class="chart-canvas-wrap chart-canvas-wrap--tall"><canvas aria-label="Monthly CDSCO drug alert trends" id="monthly-trend-chart"></canvas></div><div class="chart-help">Counts use records with a reported alert month and year in the source dataset.</div></article>
+      <article class="chart-panel chart-panel-light"><div class="panel-top"><div><span>QUALITY SIGNAL</span><h3>Top Reasons for NSQ Listings</h3></div><span class="panel-tag">NSQ ONLY</span></div><div class="chart-canvas-wrap"><canvas aria-label="Top reasons for NSQ listings" id="nsq-reasons-chart"></canvas></div><div class="chart-help">Shows the most frequent reported reason/test-failure labels; missing reasons are excluded.</div></article>
+      <article class="chart-panel chart-panel-light"><div class="panel-top"><div><span>TIME COVERAGE</span><h3>Alerts by Year</h3></div><span class="panel-tag">2018–2026</span></div><div class="chart-canvas-wrap"><canvas aria-label="Drug alerts by year" id="alerts-year-chart"></canvas></div></article>
+      <article class="chart-panel chart-panel-light"><div class="panel-top"><div><span>REPORT CLASSIFICATION</span><h3>Report Type Distribution</h3></div><span class="panel-tag">SOURCE CATEGORY</span></div><div class="chart-canvas-wrap"><canvas aria-label="Report type distribution" id="report-type-chart"></canvas></div><div class="chart-help">The supplied dataset has no separate <code>reportType</code> field, so this chart uses its actual <code>category</code> field.</div></article>
+      <article class="chart-panel chart-panel-light"><div class="panel-top"><div><span>MANUFACTURER SIGNAL</span><h3>Manufacturers with Most Alerts</h3></div><span class="panel-tag">TOP 10</span></div><div class="chart-canvas-wrap chart-canvas-wrap--tall"><canvas aria-label="Manufacturers with the most drug alerts" id="manufacturer-chart"></canvas></div><div class="chart-help">Counts are based on the manufacturer values present in the source records.</div></article>
+      <article class="chart-panel chart-panel-light"><div class="panel-top"><div><span>RECENT ACTIVITY</span><h3>Latest Reported Alert Months</h3></div><span class="panel-tag">LATEST 12</span></div><div class="chart-canvas-wrap"><canvas aria-label="Recent drug alert activity" id="recent-activity-chart"></canvas></div><div class="chart-help">Shows the latest 12 month/year combinations that actually contain a reported alert month.</div></article>
+      <article class="chart-panel chart-panel-light"><div class="panel-top"><div><span>ALERT SIGNAL</span><h3>Alert Category Distribution</h3></div><span class="panel-tag">SOURCE DATA</span></div><div class="chart-canvas-wrap"><canvas aria-label="Alert category distribution" id="category-chart"></canvas></div><div class="chart-help">Categories are read directly from the dataset; no missing category is relabeled.</div></article>
+    </div>
+  </div>
+</div>
+</section>
+</main>
 <div aria-label="Pharma Shield Help Assistant" class="ps-help-assistant" id="ps-help-assistant">
 <button aria-controls="ps-help-panel" aria-expanded="false" class="ps-help-toggle" id="ps-help-toggle" type="button">
 <span class="ps-help-toggle-icon">?</span><span>Need Help?</span>

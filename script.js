@@ -294,7 +294,8 @@
   /* ---------------- Rendering: result cards ---------------- */
 
   function fieldRow(label, value, mono = false) {
-    return `<div class="result-field"><dt>${escapeHTML(label)}</dt><dd${mono ? ' class="mono"' : ""}>${escapeHTML(value || "—")}</dd></div>`;
+    const displayValue = String(value ?? "").trim();
+    return `<div class="result-field"><dt>${escapeHTML(label)}</dt><dd${mono ? ' class="mono"' : ""}>${escapeHTML(displayValue && displayValue !== "-" ? displayValue : "Not reported in source")}</dd></div>`;
   }
 
   function renderAlertResult(record) {
@@ -321,11 +322,15 @@
       <article class="result-card status-${cat.css}" role="alert">
         <div class="print-only-report-header">
           <div class="print-brand-line">
-            <div class="print-brand-mark" aria-hidden="true">✚</div>
+            <svg class="print-brand-logo" aria-hidden="true" viewBox="0 0 48 48" focusable="false">
+              <path d="M24 4 41 10v12c0 10.8-6.8 18.8-17 22C13.8 40.8 7 32.8 7 22V10z" fill="none" stroke="currentColor" stroke-width="2.6"></path>
+              <path d="M24 14v20M14 24h20" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"></path>
+            </svg>
             <div><strong>PHARMA<span>SHIELD</span></strong><small>Drug Safety Intelligence</small></div>
           </div>
           <div class="print-slogan">Don't just search a medicine. Understand its record.</div>
-          <div class="print-header-rule"></div>
+          <div class="print-report-heading">REGULATORY DRUG QUALITY ALERT REPORT</div>
+          <div class="print-status">● NSQ FOUND &nbsp; NSQ — NOT OF STANDARD QUALITY</div>
         </div>
         <div class="result-topline">
           <span class="result-badge">${cat.emoji} ${cat.key} FOUND</span>
@@ -344,9 +349,14 @@
           ${fieldRow("Expiry date", record.expiryDate)}
           ${fieldRow("Drawn by", record.drawnBy)}
           ${fieldRow("Reported by", record.reportedBy)}
-          ${fieldRow("Source", record.sourceFile ? "CDSCO Drug Quality Alert" : "—")}
+          ${fieldRow("Source", record.sourceFile || "Not reported in source")}
         </dl>
         ${intelligence}
+        <div class="print-report-footer">
+          <strong>Pharma Shield</strong> · Drug Safety Intelligence<br>
+          Source: CDSCO-derived drug quality alert dataset
+          <div class="print-disclaimer">Pharma Shield is an educational/informational tool and is not CDSCO. This report reflects records available in the Pharma Shield dataset and does not constitute an independent safety or quality certification.</div>
+        </div>
         <div class="result-actions">
           <button class="btn btn-outline" type="button" data-print>🖨 Print result</button>
           <button class="btn btn-outline" type="button" data-ai-explain="true" data-record-id="${escapeHTML(record.id)}">✦ Explain with AI</button>
@@ -378,9 +388,6 @@
         <span class="result-badge">🟠 ${escapeHTML(title)}</span>
         <p class="result-message">${introText}</p>
         <dl class="result-grid">${rows}</dl>
-        <div class="result-actions">
-          <button class="btn btn-outline" type="button" data-print>🖨 Print result</button>
-        </div>
         ${DB.isDemoData ? '<p class="result-note">This result is based on fallback sample data, not the live dataset.</p>' : ""}
       </article>`;
   }
@@ -399,9 +406,6 @@
           No matching record was found in the CDSCO alert index. <strong>Note: This does not constitute an official safety or quality certification.</strong>
           Try checking the spelling or search using the exact batch number. Always verify through official CDSCO sources.
         </p>
-        <div class="result-actions">
-          <button class="btn btn-outline" type="button" data-print>🖨 Print result</button>
-        </div>
       </article>`;
   }
 
@@ -453,7 +457,13 @@
     container.scrollIntoView({ behavior: "smooth", block: "start" });
 
     const printBtn = el("[data-print]", container);
-    if (printBtn) printBtn.addEventListener("click", () => window.print());
+    if (printBtn) {
+      printBtn.addEventListener("click", () => {
+        if (outcome.type !== "alert" || categoryInfo(outcome.record?.category).key !== "NSQ") return;
+        document.body.classList.add("nsq-print-mode");
+        window.print();
+      });
+    }
 
     if (status === "NSQ" || status === "ALERTED") {
       showToast(`${status} alert found for this medicine/batch.`, "alert");
@@ -849,9 +859,6 @@
           <span class="result-badge">📋 REPORT HISTORY</span>
           <p class="result-message">Showing <strong>${matches.length}</strong> CDSCO quality-alert report${matches.length === 1 ? "" : "s"} for ${escapeHTML(month)} ${escapeHTML(year)}.</p>
           <dl class="result-grid">${rows}</dl>
-          <div class="result-actions">
-            <button class="btn btn-outline" type="button" data-print>🖨 Print result</button>
-          </div>
         </article>`;
       container.hidden = false;
       status.textContent = `Showing ${matches.length} report${matches.length === 1 ? "" : "s"} for ${month} ${year}.`;
@@ -1981,37 +1988,9 @@
 })();
 
 
-/* ===== NSQ Result Print Controller ===== */
-(function(){
-  "use strict";
-  function initNSQPrint(){
-    const btn=document.getElementById("print-nsq-result");
-    if(!btn) return;
-    const findResult=()=>{
-      const candidates=["#result",".search-result","#search-result",".result-card",".result-container"];
-      for(const sel of candidates){const el=document.querySelector(sel);if(el)return el}
-      return null;
-    };
-    btn.addEventListener("click",()=>{
-      const result=findResult();
-      if(!result) return;
-      result.setAttribute("data-print-target","true");
-      document.body.classList.add("nsq-print-mode");
-      window.print();
-    });
-    window.addEventListener("afterprint",()=>document.body.classList.remove("nsq-print-mode"));
 
-    // Observe result rendering. The button is only available after an actual result exists.
-    const observer=new MutationObserver(()=>{
-      const result=findResult();
-      if(!result) return;
-      const text=(result.innerText||"").toUpperCase();
-      const isNoMatch=text.includes("NO MATCHING ALERT FOUND") || text.includes("NO ALERT FOUND");
-      // Print is intended for actual matched/NSQ results, not a no-match certification.
-      btn.hidden=isNoMatch;
-    });
-    observer.observe(document.body,{subtree:true,childList:true,characterData:true});
-  }
-  if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",initNSQPrint);
-  else initNSQPrint();
-})();
+
+/* ===== NSQ Result Print Cleanup ===== */
+window.addEventListener("afterprint", () => {
+  document.body.classList.remove("nsq-print-mode");
+});
