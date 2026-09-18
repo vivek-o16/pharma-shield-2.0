@@ -67,6 +67,7 @@ footer{background:#091b1c;color:#a1b5b1;padding:40px 0}.footer-shell{display:fle
 /* ===== Pharma Shield 2.0 — separated page architecture ===== */
 .ps-page-hero{padding:112px 20px 72px;background:linear-gradient(180deg,rgba(20,80,110,.07),transparent)}
 .ps-page-hero--dark{background:linear-gradient(180deg,rgba(10,35,50,.96),rgba(10,35,50,.9));color:#fff}
+.ps-page-hero--dark .eyebrow{color:#91dcd2}
 .ps-page-hero h1{max-width:900px;margin:10px 0 14px;font-size:clamp(2.5rem,6vw,4.8rem);line-height:1.02}
 .ps-page-hero p{max-width:760px;margin:0;font-size:1.08rem;line-height:1.7;opacity:.78}
 .ps-page-content{min-height:55vh}
@@ -225,3 +226,17 @@ button,input,select,textarea{touch-action:manipulation}@media(max-width:620px){b
   body.nsq-print-mode .search-result button,
   body.nsq-print-mode #print-nsq-result{display:none!important}
 }
+
+/* ===== Formatting fixes: consistent dark-hero kicker color,
+   compact help widget so it stops overlapping page content,
+   and readable Alert Explorer badges/rows. ===== */
+.ps-help-toggle{padding:0;width:48px;height:48px;justify-content:center;overflow:hidden;transition:width .22s ease,padding .22s ease}
+.ps-help-toggle span:last-child{max-width:0;overflow:hidden;white-space:nowrap;transition:max-width .22s ease}
+.ps-help-toggle:hover,.ps-help-toggle:focus-visible{width:auto;padding:12px 18px 12px 14px}
+.ps-help-toggle:hover span:last-child,.ps-help-toggle:focus-visible span:last-child{max-width:140px;margin-left:3px}
+
+.explorer-badge{border-radius:9px;white-space:normal;line-height:1.35;text-align:center;max-width:150px}
+.explorer-table td:nth-child(3){max-width:260px}
+.explorer-table td:nth-child(3) span.cell-clamp{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.explorer-count-note{color:var(--muted);font-size:11px;margin-top:2px}
+.explorer-table-wrap+.prohibited-pagination{margin-top:18px}
